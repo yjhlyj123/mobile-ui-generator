@@ -1,0 +1,4 @@
+interface:
+  display_name: "mobile-ui-generator"
+  short_description: "Generate enterprise mobile UIs with a Pencil-first workflow for complex pages"
+  default_prompt: "Use the mobile-ui-generator codex skill to build B端 enterprise mobile pages with a simple-page direct flow and a complex-page Pencil-first workflow. Read the core design rules, keep information restraint, and use Pencil MCP only when the page is complex and the tool is available."
