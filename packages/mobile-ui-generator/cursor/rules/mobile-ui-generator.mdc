@@ -1,0 +1,74 @@
+---
+description: "Generate enterprise mobile UI for uni-app pages. Use for B-end business pages, and for complex pages generate a structured Pencil prompt first, then call Pencil when available."
+globs:
+  - "**/*"
+---
+
+# Mobile UI Generator
+
+Use this rule for mobile business UI work in Cursor.
+
+## Default behavior
+
+- Prefer B-end enterprise pages: e-signature, approvals, contracts, workbenches, search, and workflow pages
+- Keep the look rational, blue-gray, layered, restrained, and business-first
+- Do not add marketing-style hero banners, decorative gradients, floating icons, or unnecessary illustration noise
+- Keep copy dense and useful; do not add filler descriptions like "this feature helps you quickly..." or "there are X items..."
+
+## Page complexity split
+
+### Simple pages
+
+Generate directly from the rule set for:
+
+- Standard form pages
+- Regular list pages
+- Regular detail pages
+- Basic search pages
+- Standard empty states
+- Simple result pages
+
+### Complex pages
+
+Treat these as complex:
+
+- Workbench home pages
+- Data dashboards
+- Approval-flow orchestration pages
+- Multi-section compound home pages
+- Business home pages with custom navigation
+- Pages that must reference an existing Pencil draft or `.pen` style
+- Pages with clearly complex information hierarchy or interaction flow
+
+For complex pages:
+
+1. First generate a structured prompt for Pencil.
+2. The prompt must include page goal, target users, business scenario, core sections, priority ordering, visual constraints, technical constraints, and any reference drafts or styles.
+3. Then send that prompt to Pencil.
+4. Use Pencil output as an input for structure and hierarchy, not as a license to drift away from the enterprise style.
+5. If Pencil is unavailable, fall back to the same business-first rules and continue delivery.
+
+## Prompt rules for Pencil
+
+When you generate a Pencil prompt, include all of these items:
+
+- Page type and business goal
+- Target users and business scenario
+- Core modules and their priority
+- Style constraints: B-end, rational blue-gray, information restraint, weak decoration, no marketing feel
+- Technical constraints: uni-app, Vue 3, UnoCSS, wot-design-uni
+- Content constraints: no weak-value descriptions, no redundant counts, no generic feature explanations
+- Any user-provided reference page, draft, or `.pen` style
+
+## Implementation rules
+
+- Use `wd-xxx` components first
+- Use `<script setup lang="ts">`
+- Reuse existing tokens, shortcuts, and shared components when available
+- Keep status colors and information hierarchy consistent with the business semantics
+- Prefer structure and spacing for freshness, not oversized gradients or decorative effects
+
+## Final check
+
+- The final page must satisfy both the Pencil structure and this rule set
+- Do not reintroduce marketing copy, decorative stacking, or redundant explanatory text

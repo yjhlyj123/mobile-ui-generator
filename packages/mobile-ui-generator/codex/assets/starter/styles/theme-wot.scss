@@ -1,0 +1,26 @@
+@use './tokens.scss' as *;
+
+page {
+  --wot-color-theme: #{$color-primary};
+  --wot-color-success: #{$color-success};
+  --wot-color-warning: #{$color-warning};
+  --wot-color-danger: #{$color-danger};
+
+  --wot-button-primary-bg-color: #{$color-primary};
+  --wot-button-primary-border-color: #{$color-primary};
+  --wot-button-primary-color: #{$color-bg-card};
+
+  --wot-input-not-empty-text-color: #{$color-text-regular};
+  --wot-input-placeholder-color: #{$color-text-placeholder};
+
+  --wot-cell-title-color: #{$color-text-regular};
+  --wot-cell-value-color: #{$color-text-secondary};
+  --wot-cell-label-color: #{$color-text-placeholder};
+
+  --wot-navbar-title-font-size: #{$font-size-lg};
+  --wot-navbar-title-font-weight: #{$font-weight-bold};
+
+  --wot-popup-bg-color: #{$color-bg-card};
+  --wot-background-color: #{$color-bg-page};
+  --wot-border-color: #{$color-border};
+}
