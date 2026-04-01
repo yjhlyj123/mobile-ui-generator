@@ -1,3 +1,6 @@
 .DS_Store
 Thumbs.db
 
+# 本地 npm 登录/临时 token，勿提交
+.npmrc
+
