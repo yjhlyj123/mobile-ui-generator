@@ -1,8 +1,16 @@
 {
   "name": "mobile-ui-generator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cross-agent mobile UI generator for Codex, Claude Code, and Cursor.",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yjhlyj123/mobile-ui-generator.git"
+  },
+  "homepage": "https://github.com/yjhlyj123/mobile-ui-generator#readme",
+  "bugs": {
+    "url": "https://github.com/yjhlyj123/mobile-ui-generator/issues"
+  },
   "type": "commonjs",
   "bin": {
     "mobile-ui-generator": "bin/mobile-ui-generator.cjs"
@@ -11,7 +19,8 @@
     "bin",
     "scripts",
     "packages",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "check": "bash scripts/check-suite.sh",
