@@ -1,5 +1,4 @@
 interface:
   display_name: "mobile-ui-generator"
   short_description: "Generate enterprise mobile UIs with a Pencil-first workflow for complex pages"
-  default_prompt: "Use the mobile-ui-generator codex skill to build B端 enterprise mobile pages with a simple-page direct flow and a complex-page Pencil-first workflow. Read the core design rules, keep information restraint, and use Pencil MCP only when the page is complex and the tool is available."
-
+  default_prompt: "Use the mobile-ui-generator codex skill to build B端 enterprise mobile pages. Treat packages/mobile-ui-generator/core/command-contract.yaml as the source of truth for /mug:* parsing, state transitions, missing-input handling, Pencil installation, and acceptance reporting. Read the core design rules, keep information restraint, and do not improvise command behavior outside the contract."

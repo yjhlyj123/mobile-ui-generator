@@ -1,39 +1,61 @@
-# Codex Adapter: Pencil Prompt Rules
+# Codex 适配器：Pencil Prompt 规则
 
-When a page is complex, build a structured prompt for Pencil instead of passing the raw user request through unchanged.
+页面复杂时，先整理结构化 Pencil prompt，而不是把用户原始需求原样传入。
 
-## Prompt Must Include
+## Prompt 必须包含
 
-- Page type and business goal
-- Target users and business scenario
-- Core modules and their priority
-- Page style constraints
-- Technical delivery constraints
-- Content restraint rules
-- Reference material if the user provided screenshots, a `.pen` file, or a design draft
+- 页面类型与业务目标
+- 目标用户与业务场景
+- 核心模块及其优先级
+- 页面风格约束
+- 技术交付约束
+- 内容克制规则
+- 用户提供了截图、`.pen` 文件或设计草稿时，作为参考信息附上
 
-## Style Constraints
+## 风格约束
 
-- B端 enterprise tone
-- Rational blue-gray direction
-- Information restraint
-- Weak decoration
-- No marketing-style layout or copy
+- B 端企业基调
+- 理性蓝灰方向
+- 信息克制
+- 弱装饰
+- 无营销式布局或文案
 
-## Technical Constraints
+## 技术约束
 
 - uni-app
 - Vue 3
 - UnoCSS
 - wot-design-uni
 
-## Content Constraints
+## 内容约束
 
-- No weak-value descriptions
-- No automatic item counts
-- No generic function explanations
-- No promotional wording
+- 不写弱价值描述
+- 不自动补充数量提示
+- 不写通用功能说明
+- 不写宣传式文案
 
-## Fallback Rule
+## 重构模式 Prompt 规则
 
-- If Pencil MCP is unavailable, keep the same constraints and generate the page from the skill directly
+重构模式激活时，为 **3 个方向分别撰写独立的结构化 prompt**。
+
+每个方向的 prompt 必须：
+
+- 在开头标注方向名称与策略
+- 从参考页中只提取模块、数据字段、状态和操作——不得复制其布局或视觉处理方式
+- 明确描述本方向与参考页面的差异点
+- 包含「避免复现参考页的以下元素」段落
+
+```md
+# 方向名称：[方向名]
+- 方向策略：[一句话说明该方向的核心差异]
+- 从参考页提取的内容（仅模块/数据/状态/操作）：
+- 本方向的布局策略：
+- 本方向的信息层级：
+- 避免复现的参考页元素：
+- 风格约束：B 端企业、理性蓝灰、信息克制、弱装饰
+- 技术约束：uni-app / Vue 3 / UnoCSS / wot-design-uni
+```
+
+## 回退规则
+
+- 如果 Pencil MCP 不可用，不得继续生成页面实现代码；必须先输出诊断结果、失败原因与阻塞说明，等待用户确认后再决定是否绕过 Pencil

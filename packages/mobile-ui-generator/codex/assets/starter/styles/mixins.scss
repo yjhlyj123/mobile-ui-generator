@@ -1,0 +1,38 @@
+@use './tokens.scss' as *;
+
+// 单行文本截断
+@mixin text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 多行文本截断
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+}
+
+// 底部安全区 padding
+@mixin safe-area-bottom($extra: 0px) {
+  padding-bottom: calc(env(safe-area-inset-bottom) + #{$extra});
+}
+
+// 1px 细线边框（解决 Retina 屏幕 1px 问题）
+@mixin border-hairline($color: $color-border, $position: bottom) {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    #{$position}: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: $color;
+    content: '';
+    transform: scaleY(0.5);
+    transform-origin: #{$position};
+  }
+}

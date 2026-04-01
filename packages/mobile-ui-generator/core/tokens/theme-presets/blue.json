@@ -1,0 +1,64 @@
+{
+  "id": "blue",
+  "name": "商务蓝",
+  "description": "默认主题：理性、专业、值得信赖的蓝灰色系，适用于 B 端企业应用和 OA 系统。",
+  "brand": {
+    "primary": "#0E74FF",
+    "primaryLight": "#E8F1FF",
+    "primaryDark": "#0B5ED9",
+    "primaryDisabled": "rgba(14, 116, 255, 0.4)"
+  },
+  "functional": {
+    "success": "#34D19D",
+    "warning": "#F0883A",
+    "danger": "#FA4350",
+    "info": "#909399"
+  },
+  "status": {
+    "brand":   { "main": "#6D5CF6", "bg": "#F5F3FF", "border": "#DDD6FE", "text": "#1F1B4D" },
+    "success": { "main": "#22C55E", "bg": "#ECFDF3", "border": "#BBF7D0", "text": "#14532D" },
+    "warning": { "main": "#F59E0B", "bg": "#FFF7ED", "border": "#FED7AA", "text": "#7C2D12" },
+    "error":   { "main": "#EF4444", "bg": "#FEF2F2", "border": "#FECACA", "text": "#7F1D1D" },
+    "info":    { "main": "#3B82F6", "bg": "#EFF6FF", "border": "#BFDBFE", "text": "#1E3A8A" }
+  },
+  "neutral": {
+    "textPrimary": "#1A1A1A",
+    "textRegular": "#333333",
+    "textSecondary": "#666666",
+    "textPlaceholder": "#999999",
+    "textDisabled": "#C0C4CC",
+    "bgPage": "#F5F6FA",
+    "bgCard": "#FFFFFF",
+    "bgHover": "#F5F5F5",
+    "border": "#EBEDF0",
+    "borderLight": "#F2F3F5"
+  },
+  "shadows": {
+    "sm": "0 1px 4px rgba(0, 0, 0, 0.04)",
+    "base": "0 2px 8px rgba(0, 0, 0, 0.06)",
+    "md": "0 4px 12px rgba(0, 0, 0, 0.08)",
+    "lg": "0 8px 24px rgba(0, 0, 0, 0.10)",
+    "xl": "0 12px 36px rgba(0, 0, 0, 0.12)"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "xxl": "18px",
+    "full": "9999px"
+  },
+  "motion": {
+    "durationFast": "150ms",
+    "durationNormal": "250ms",
+    "durationSlow": "400ms",
+    "easingStandard": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "easingDecelerate": "cubic-bezier(0, 0, 0.2, 1)",
+    "easingSpring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+  },
+  "gradients": {
+    "headerBg": "linear-gradient(135deg, #0E74FF 0%, #3B82F6 50%, #60A5FA 100%)",
+    "cardAccent": "linear-gradient(135deg, #0E74FF 0%, #6366F1 100%)",
+    "tabbarActive": "linear-gradient(135deg, #0E74FF 0%, #3B82F6 100%)"
+  }
+}

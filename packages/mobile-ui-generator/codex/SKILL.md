@@ -1,36 +1,106 @@
 ---
 name: mobile-ui-generator
-description: Build enterprise mobile UI for uni-app projects with a rational blue-gray, business-first style. Use for mini program pages, H5 pages, form pages, list pages, detail pages, workbench home pages, dashboards, approval flows, search pages, and starter-layer UI. For simple pages generate directly; for complex pages first synthesize a structured Pencil prompt, then call Pencil MCP when available.
+description: 基于可校验命令契约的移动端 UI 生成器，统一管理 /mug:* 命令、状态机、缺失输入处理与验收汇报。
 ---
 
-# Mobile UI Generator For Codex
+# 移动端 UI 生成器 — Codex 适配器
 
-Use this Codex adapter to generate business mobile pages that follow the shared mobile UI generator rules.
+> AUTO-GENERATED from `packages/mobile-ui-generator/core/command-contract.yaml`. Run `npm run render:docs` after editing the contract.
 
-## Read Order
+## 命令契约
 
-1. Read `references/design-spec.md`
-2. Read `references/workflow.md`
-3. If the page is complex, read `references/prompt-rules.md` and `references/pencil-prompt-template.md`
-4. If the task is starter or project setup work, read `references/project-setup.md`
-5. If the task includes empty states, read `references/empty-state-assets.md`
+| 命令 | 模式 | 说明 |
+| --- | --- | --- |
+| /mug:s | 简单模式 | 直接进入代码实现，不引入 Pencil 设计流。 |
+| /mug:x | 复杂模式 | 先整理结构化 prompt，再尝试 Pencil，最后落代码。 |
+| /mug:d | 设计先行 | 先确保 Pencil 可用，再执行设计流与代码实现。 |
+| /mug:form | 表单专项 | 作为专项修饰符，聚焦 表单布局、校验、联动、录入效率 |
+| /mug:list | 列表专项 | 作为专项修饰符，聚焦 搜索、筛选、空状态、列表密度 |
+| /mug:detail | 详情专项 | 作为专项修饰符，聚焦 信息层级、状态表达、操作入口 |
 
-## Core Rules
+## 组合与状态机
 
-- Prefer `wd-xxx` components
-- Use `<script setup lang="ts">`
-- Keep the UI enterprise-first, restrained, and information-dense
-- Do not add filler descriptions, count hints, or generic feature explanations unless the user explicitly asks
-- For complex pages, never send raw user text to Pencil; always synthesize a structured Pencil prompt first
-- If Pencil MCP is unavailable, fall back to the same design rules and continue delivery
+- 优先级：`d > x > s`
+- form/list/detail 作为页面类型修饰符，不改变复杂度主判定。
 
-## Assets
+**允许的命令形态**
+- `/mug`
+- `/mug:s`
+- `/mug:x`
+- `/mug:d`
+- `/mug:form`
+- `/mug:list`
+- `/mug:detail`
+- `/mug:s:form`
+- `/mug:s:list`
+- `/mug:s:detail`
+- `/mug:x:form`
+- `/mug:x:list`
+- `/mug:x:detail`
+- `/mug:d:form`
+- `/mug:d:list`
+- `/mug:d:detail`
+- `/mug:d:x`
+- `/mug:d:x:form`
+- `/mug:d:x:list`
+- `/mug:d:x:detail`
+- `/mug:theme`
+- `/mug:tabbar`
+- `/mug:check`
+- `/mug:help`
 
-- Reuse `assets/starter/` when setting up a new project
-- Reuse `assets/placeholders/` for empty states before inventing new placeholder graphics
+**兼容别名**
+- `/mug:d:x` -> `/mug:d`：兼容旧写法，推荐只写 /mug:d。
 
-## Final Check
+**明确禁止**
+- `/mug:s:x`
+- `/mug:s:d`
+- `/mug:s:d:form`
+- `/mug:form:list`
+- `/mug:detail:list`
+- `/mug:unknown`
 
-- The final page matches the business scenario and information priority
-- The final page satisfies both the Pencil structure and the Codex implementation constraints
-- The final page still looks like an enterprise system instead of a marketing page
+- `simple`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+- `complex`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+- `design_first`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+- `refactor`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> offer_refactor_directions (输出 3 个重构方向) -> wait_for_direction_choice (等待用户选择方向) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+
+**强制停顿点**
+- 进入重构模式且用户尚未选择方向：必须先给出 3 个差异化方向，并等待用户选择。
+- complex/design_first 中 Pencil 安装完成但连接仍失败：不得自动降级到纯代码实现；必须先定位 Pencil 连接失败原因并汇报。
+- complex/design_first 中 Pencil 可用但用户尚未选择 UI 方案：必须先给出至少 3 个差异化 UI 方案，并等待用户选择后再继续。
+- complex/design_first 中用户已选定 UI 方案但尚未看到 Pencil 设计稿：选定方案 ≠ 同意设计。用户选完方案后，必须编写结构化 Prompt、调用 Pencil 生成设计稿、展示给用户查看。绝对禁止跳过 Pencil 设计直接写代码。
+- complex/design_first 已调用 Pencil 生成设计稿：必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。
+
+## 缺失输入处理
+
+| 缺失项 | 允许动作 | 必须说明 | 模式影响 |
+| --- | --- | --- | --- |
+| 缺截图 | 允许按文字需求实现 | 必须标记“无视觉参考” | 保持原模式 |
+| 缺现有页面代码 | 允许从零生成 | 不得声称“重构已完成” | 重构模式可继续，但要明确缺少目标代码上下文 |
+| 缺字段/接口 | 允许生成 stub 结构 | 必须列出关键假设 | 保持原模式 |
+| 缺参考页 | 禁止进入重构模式，改走普通生成模式 | 必须明确说明未进入重构模式 | 从 refactor 回退到 simple/complex/design_first |
+| 缺 Pencil | 必须先执行安装、验证与诊断 | 优先调用 mobile-ui-generator install-pencil-mcp；若连接失败，必须定位根因、停止当前开发并阻塞，不得自动降级 | complex/design_first 先走安装校验，连接失败时终止当前开发并停在排查阶段 |
+
+## Pencil 验证
+
+- 优先执行 `mobile-ui-generator install-pencil-mcp`
+- 先启动 Pencil
+- 执行 codex mcp get pencil，确认命令指向 Pencil 自带 mcp-server 且参数为 --app desktop
+- 在 Codex 中执行 /mcp，确认 Pencil 已出现在 MCP 列表
+- 再继续使用 /mug:d 或复杂页面需求
+
+## 交付要求
+
+- `simple`：直接产出页面实现代码；如缺字段，附带假设项
+- `complex`：先给出至少 3 个 UI 方案；用户未选方案前不得继续结构化 prompt 或实现；用户选定后再产出结构化 prompt；若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码；若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码；再产出页面实现代码；说明是否成功走到 Pencil
+- `design_first`：先说明 Pencil 验证或安装结果；再给出至少 3 个 UI 方案；用户未选方案前不得继续结构化 prompt / 设计意图或实现；用户选定后再产出结构化 prompt / 设计意图；若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码；若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码；最后产出页面实现代码
+- `refactor`：先给出 3 个差异化方向；用户未选方向前不得直接实现；实现后说明与参考页的差异点
+
+## 验收汇报
+
+- 是否走了 Pencil
+- 若 Pencil 未连通，失败原因是什么
+- 若 Pencil 未连通，是否已终止当前开发
+- 关键假设有哪些
+- 输出了哪些实现物

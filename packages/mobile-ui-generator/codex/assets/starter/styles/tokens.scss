@@ -8,6 +8,8 @@ $color-warning: #f0883a;
 $color-danger: #fa4350;
 $color-info: #909399;
 
+// $color-primary 用于按钮、链接等交互元素主色
+// $status-brand-main 用于状态标签、信息面板等品牌语义色，两者不可混用
 $status-brand-main: #2563eb;
 $status-brand-surface: #eff6ff;
 $status-brand-border: #bfdbfe;
@@ -56,7 +58,6 @@ $font-size-md: 16px;
 $font-size-lg: 18px;
 $font-size-xl: 20px;
 $font-size-xxl: 24px;
-$font-size-hero: 24px;
 
 $font-weight-regular: 400;
 $font-weight-medium: 500;
@@ -76,9 +77,14 @@ $radius-sm: 4px;
 $radius-md: 8px;
 $radius-lg: 12px;
 $radius-xl: 16px;
-$radius-xxl: 16px;
 $radius-round: 999px;
 
 $shadow-card: 0 1px 4px rgba(15, 23, 42, 0.04);
 $shadow-popup: 0 -2px 12px rgba(0, 0, 0, 0.08);
 $shadow-modal: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+$color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+$z-index-popup: 100;
+$z-index-modal: 200;
+$z-index-toast: 300;

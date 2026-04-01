@@ -53,16 +53,18 @@ function handleActionClick() {
     <image class="empty-state__image" :src="imageSrc" mode="widthFix" />
     <text class="empty-state__title">{{ resolvedTitle }}</text>
     <text class="empty-state__description">{{ resolvedDescription }}</text>
-    <wd-button
-      v-if="showAction"
-      class="empty-state__action"
-      type="primary"
-      plain
-      round
-      @click="handleActionClick"
-    >
-      {{ resolvedActionText }}
-    </wd-button>
+    <slot name="action">
+      <wd-button
+        v-if="showAction && resolvedActionText"
+        class="empty-state__action"
+        type="primary"
+        plain
+        round
+        @click="handleActionClick"
+      >
+        {{ resolvedActionText }}
+      </wd-button>
+    </slot>
   </view>
 </template>
 
@@ -73,25 +75,25 @@ function handleActionClick() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px $spacing-xl;
+  padding: $spacing-xxl $spacing-xl;
   text-align: center;
 }
 
 .empty-state__image {
-  width: 220px;
+  width: 200px;
   max-width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: $spacing-lg;
 }
 
 .empty-state__title {
   color: $color-text-primary;
-  font-size: $font-size-xl;
+  font-size: $font-size-md;
   font-weight: $font-weight-bold;
-  line-height: 28px;
+  line-height: 26px;
 }
 
 .empty-state__description {
-  margin-top: $spacing-sm;
+  margin-top: $spacing-xs;
   color: $color-text-secondary;
   font-size: $font-size-sm;
   line-height: 18px;

@@ -9,11 +9,15 @@
   },
   "files": [
     "bin",
+    "scripts",
     "packages",
     "README.md"
   ],
   "scripts": {
-    "check": "bash scripts/check-suite.sh"
+    "check": "bash scripts/check-suite.sh",
+    "install:pencil-mcp": "bash scripts/install-pencil-mcp.sh",
+    "render:docs": "node scripts/render-command-docs.cjs",
+    "validate:contract": "node scripts/validate-command-contract.cjs"
   },
   "keywords": [
     "codex",

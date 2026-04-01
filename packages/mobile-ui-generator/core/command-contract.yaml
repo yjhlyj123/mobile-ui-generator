@@ -1,0 +1,467 @@
+{
+  "schema_version": "1.0.0",
+  "generated_notice": "> AUTO-GENERATED from `packages/mobile-ui-generator/core/command-contract.yaml`. Run `npm run render:docs` after editing the contract.",
+  "namespace": "/mug",
+  "installer_commands": {
+    "pencil": "mobile-ui-generator install-pencil-mcp",
+    "pencil_npx": "npx mobile-ui-generator install-pencil-mcp"
+  },
+  "public_commands": [
+    "/mug:s",
+    "/mug:x",
+    "/mug:d",
+    "/mug:form",
+    "/mug:list",
+    "/mug:detail",
+    "/mug:theme",
+    "/mug:tabbar",
+    "/mug:check",
+    "/mug:help"
+  ],
+  "tokens": {
+    "complexity": {
+      "s": {
+        "label": "简单模式",
+        "summary": "直接进入代码实现，不引入 Pencil 设计流。",
+        "required_inputs": [
+          "页面目标或页面名称",
+          "核心模块或表单字段"
+        ],
+        "optional_inputs": [
+          "接口字段",
+          "参考页面",
+          "视觉偏好"
+        ],
+        "default_assumptions": [
+          "缺少视觉资料时允许按企业 B 端默认风格实现",
+          "缺少字段细节时允许先生成 stub 结构并显式列出假设"
+        ]
+      },
+      "x": {
+        "label": "复杂模式",
+        "summary": "先整理结构化 prompt，再尝试 Pencil，最后落代码。",
+        "required_inputs": [
+          "业务目标",
+          "核心模块列表",
+          "信息优先级"
+        ],
+        "optional_inputs": [
+          "接口字段",
+          "角色差异",
+          "参考页面或截图"
+        ],
+        "default_assumptions": [
+          "未提供视觉参考时保持企业业务系统风格",
+          "缺少接口字段时允许先输出结构化 prompt 与 stub 实现"
+        ]
+      },
+      "d": {
+        "label": "设计先行",
+        "summary": "先确保 Pencil 可用，再执行设计流与代码实现。",
+        "required_inputs": [
+          "业务目标",
+          "核心模块列表",
+          "需要通过设计先行解决的问题"
+        ],
+        "optional_inputs": [
+          "参考页面或截图",
+          ".pen 文件",
+          "现有页面代码"
+        ],
+        "default_assumptions": [
+          "缺少截图时允许基于文字需求进入设计流，但必须标记无视觉参考",
+          "缺少现有代码时允许从零生成，不得声称是重构完成"
+        ]
+      }
+    },
+    "specialty": {
+      "form": {
+        "label": "表单专项",
+        "focus": "表单布局、校验、联动、录入效率"
+      },
+      "list": {
+        "label": "列表专项",
+        "focus": "搜索、筛选、空状态、列表密度"
+      },
+      "detail": {
+        "label": "详情专项",
+        "focus": "信息层级、状态表达、操作入口"
+      }
+    },
+    "utility": {
+      "theme": {
+        "label": "主题切换",
+        "summary": "预览或切换主题配色方案。",
+        "action": "列出可用主题预设，允许用户预览和切换。"
+      },
+      "tabbar": {
+        "label": "Tabbar 页面",
+        "summary": "快速生成 Tabbar 一级页面框架。",
+        "action": "触发 Tabbar 页面检测，提供至少 3 种 Tabbar 风格方案供选择。"
+      },
+      "check": {
+        "label": "设计自检",
+        "summary": "对照 design-spec.md 自检当前页面。",
+        "action": "逐项检查当前页面是否符合设计规范，输出检查报告。"
+      },
+      "help": {
+        "label": "帮助",
+        "summary": "显示所有可用命令及用法。",
+        "action": "输出命令速查表和使用说明。"
+      }
+    }
+  },
+  "combination_rules": {
+    "precedence": [
+      "d",
+      "x",
+      "s"
+    ],
+    "specialty_role": "form/list/detail 作为页面类型修饰符，不改变复杂度主判定。",
+    "accepted_commands": [
+      "/mug",
+      "/mug:s",
+      "/mug:x",
+      "/mug:d",
+      "/mug:form",
+      "/mug:list",
+      "/mug:detail",
+      "/mug:s:form",
+      "/mug:s:list",
+      "/mug:s:detail",
+      "/mug:x:form",
+      "/mug:x:list",
+      "/mug:x:detail",
+      "/mug:d:form",
+      "/mug:d:list",
+      "/mug:d:detail",
+      "/mug:d:x",
+      "/mug:d:x:form",
+      "/mug:d:x:list",
+      "/mug:d:x:detail",
+      "/mug:theme",
+      "/mug:tabbar",
+      "/mug:check",
+      "/mug:help"
+    ],
+    "invalid_examples": [
+      "/mug:s:x",
+      "/mug:s:d",
+      "/mug:s:d:form",
+      "/mug:form:list",
+      "/mug:detail:list",
+      "/mug:unknown"
+    ],
+    "compatibility_aliases": [
+      {
+        "command": "/mug:d:x",
+        "normalized_to": "/mug:d",
+        "note": "兼容旧写法，推荐只写 /mug:d。"
+      }
+    ]
+  },
+  "auto_detection": {
+    "complex_threshold": 2,
+    "default_without_hits": "simple",
+    "complex_signals": [
+      {
+        "id": "api_count_ge_3",
+        "label": "接口数量 ≥ 3",
+        "metric": "api_count",
+        "operator": "gte",
+        "value": 3,
+        "description": "需要聚合多个接口数据。"
+      },
+      {
+        "id": "module_count_ge_3",
+        "label": "独立业务模块 ≥ 3",
+        "metric": "module_count",
+        "operator": "gte",
+        "value": 3,
+        "description": "同屏存在多个独立模块。"
+      },
+      {
+        "id": "has_status_flow",
+        "label": "存在状态流转或审批流",
+        "metric": "has_status_flow",
+        "operator": "eq",
+        "value": true,
+        "description": "页面存在明确的业务状态跳转。"
+      },
+      {
+        "id": "has_custom_navigation",
+        "label": "存在自定义导航或 Tabbar",
+        "metric": "has_custom_navigation",
+        "operator": "eq",
+        "value": true,
+        "description": "页面结构超出普通单页。"
+      },
+      {
+        "id": "screen_data_types_ge_3",
+        "label": "首屏需展示 3 类以上不同性质的数据",
+        "metric": "screen_data_types",
+        "operator": "gte",
+        "value": 3,
+        "description": "同屏出现指标、列表、操作区等多类数据。"
+      },
+      {
+        "id": "role_sensitive",
+        "label": "用户角色影响页面内容",
+        "metric": "role_sensitive",
+        "operator": "eq",
+        "value": true,
+        "description": "不同角色看到的模块或操作不同。"
+      },
+      {
+        "id": "has_data_visualization",
+        "label": "包含图表或统计卡片",
+        "metric": "has_data_visualization",
+        "operator": "eq",
+        "value": true,
+        "description": "页面出现图表、进度环、统计卡片。"
+      },
+      {
+        "id": "feature_points_gt_5",
+        "label": "独立功能点 > 5",
+        "metric": "feature_points",
+        "operator": "gt",
+        "value": 5,
+        "description": "功能点较多，信息承载显著增加。"
+      }
+    ],
+    "tabbar_signals": [
+      "用户提到'首页'、'主页'、'Tabbar'、'底部导航'",
+      "页面配置中包含 tabbar 或 tabBar",
+      "使用了 /mug:tabbar 命令"
+    ]
+  },
+  "execution_states": [
+    {
+      "id": "detect_mode",
+      "label": "识别命令与复杂度"
+    },
+    {
+      "id": "collect_required_inputs",
+      "label": "收集必要输入并补默认假设"
+    },
+    {
+      "id": "install_or_verify_pencil",
+      "label": "安装或验证 Pencil"
+    },
+    {
+      "id": "offer_pencil_ui_directions",
+      "label": "输出至少 3 个 UI 方案"
+    },
+    {
+      "id": "build_structured_prompt",
+      "label": "生成结构化 prompt"
+    },
+    {
+      "id": "generate_and_confirm_design",
+      "label": "调用 Pencil 画图并等待确认"
+    },
+    {
+      "id": "offer_refactor_directions",
+      "label": "输出 3 个重构方向"
+    },
+    {
+      "id": "wait_for_direction_choice",
+      "label": "等待用户选择方向"
+    },
+    {
+      "id": "implement_code",
+      "label": "实现代码"
+    },
+    {
+      "id": "report_acceptance",
+      "label": "按验收契约汇报结果"
+    },
+    {
+      "id": "detect_tabbar",
+      "label": "检测 Tabbar 页面并推荐风格方案"
+    },
+    {
+      "id": "collect_design_preferences",
+      "label": "收集用户设计偏好"
+    }
+  ],
+  "state_flows": {
+    "simple": [
+      "detect_mode",
+      "collect_required_inputs",
+      "implement_code",
+      "report_acceptance"
+    ],
+    "complex": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_pencil_ui_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ],
+    "design_first": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_pencil_ui_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ],
+    "refactor": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_refactor_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ]
+  },
+  "forced_pauses": [
+    {
+      "id": "refactor_direction_required",
+      "trigger": "进入重构模式且用户尚未选择方向",
+      "must_block_before": "implement_code",
+      "message": "必须先给出 3 个差异化方向，并等待用户选择。"
+    },
+    {
+      "id": "pencil_connection_required",
+      "trigger": "complex/design_first/refactor 中 Pencil 安装完成但连接仍失败",
+      "must_block_before": "implement_code",
+      "message": "不得自动降级到纯代码实现；必须先定位 Pencil 连接失败原因并汇报。"
+    },
+    {
+      "id": "pencil_direction_required",
+      "trigger": "complex/design_first/refactor 中 Pencil 可用但用户尚未选择 UI 方案",
+      "must_block_before": "build_structured_prompt",
+      "message": "必须先给出至少 3 个差异化 UI 方案，并等待用户选择后再继续。"
+    },
+    {
+      "id": "pencil_design_required",
+      "trigger": "complex/design_first/refactor 中用户已选定 UI 方案但尚未看到 Pencil 设计稿",
+      "must_block_before": "implement_code",
+      "message": "选定方案 ≠ 同意设计。用户选完方案后，必须编写结构化 Prompt、调用 Pencil 生成设计稿、展示给用户查看。绝对禁止跳过 Pencil 设计直接写代码。"
+    },
+    {
+      "id": "pencil_design_confirmation",
+      "trigger": "complex/design_first/refactor 已调用 Pencil 生成设计稿",
+      "must_block_before": "implement_code",
+      "message": "必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。"
+    }
+  ],
+  "missing_input_matrix": [
+    {
+      "id": "missing_screenshot",
+      "label": "缺截图",
+      "allowed_action": "允许按文字需求实现",
+      "required_note": "必须标记“无视觉参考”",
+      "mode_effect": "保持原模式"
+    },
+    {
+      "id": "missing_existing_code",
+      "label": "缺现有页面代码",
+      "allowed_action": "允许从零生成",
+      "required_note": "不得声称“重构已完成”",
+      "mode_effect": "重构模式可继续，但要明确缺少目标代码上下文"
+    },
+    {
+      "id": "missing_interface_fields",
+      "label": "缺字段/接口",
+      "allowed_action": "允许生成 stub 结构",
+      "required_note": "必须列出关键假设",
+      "mode_effect": "保持原模式"
+    },
+    {
+      "id": "missing_reference_page",
+      "label": "缺参考页",
+      "allowed_action": "禁止进入重构模式，改走普通生成模式",
+      "required_note": "必须明确说明未进入重构模式",
+      "mode_effect": "从 refactor 回退到 simple/complex/design_first"
+    },
+    {
+      "id": "missing_pencil",
+      "label": "缺 Pencil",
+      "allowed_action": "必须先执行安装、验证与诊断",
+      "required_note": "优先调用 mobile-ui-generator install-pencil-mcp；若连接失败，必须定位根因、停止当前开发并阻塞，不得自动降级",
+      "mode_effect": "complex/design_first/refactor 先走安装校验，连接失败时终止当前开发并停在排查阶段"
+    }
+  ],
+  "output_contracts": {
+    "simple": [
+      "直接产出页面实现代码",
+      "如缺字段，附带假设项"
+    ],
+    "complex": [
+      "先给出至少 3 个 UI 方案",
+      "用户未选方案前不得继续结构化 prompt 或实现",
+      "用户选定后再产出结构化 prompt",
+      "若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码",
+      "若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码",
+      "再产出页面实现代码",
+      "说明是否成功走到 Pencil"
+    ],
+    "design_first": [
+      "先说明 Pencil 验证或安装结果",
+      "再给出至少 3 个 UI 方案",
+      "用户未选方案前不得继续结构化 prompt / 设计意图或实现",
+      "用户选定后再产出结构化 prompt / 设计意图",
+      "若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码",
+      "若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码",
+      "最后产出页面实现代码"
+    ],
+    "refactor": [
+      "先给出 3 个差异化重构方向",
+      "用户未选方向前不得直接实现",
+      "用户选定方向后再产出结构化 prompt",
+      "若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码",
+      "若 Pencil 连通，必须调用 Pencil 生成设计稿并展示给用户确认，未同意前不得写代码",
+      "实现后说明与参考页的差异点"
+    ]
+  },
+  "acceptance_report": [
+    "是否走了 Pencil",
+    "若 Pencil 未连通，失败原因是什么",
+    "若 Pencil 未连通，是否已终止当前开发",
+    "关键假设有哪些",
+    "输出了哪些实现物"
+  ],
+  "hosts": {
+    "root_readme": {
+      "title": "mobile-ui-generator"
+    },
+    "claude": {
+      "title": "mobile-ui-generator — Claude Code 适配器",
+      "verification": [
+        "确认 Pencil 已激活",
+        "确认 Claude Code CLI 已登录",
+        "继续使用 /mug:d、/mug:d:form、/mug:x:list 等命令"
+      ]
+    },
+    "codex": {
+      "title": "移动端 UI 生成器 — Codex 适配器",
+      "verification": [
+        "先启动 Pencil",
+        "执行 codex mcp get pencil，确认命令指向 Pencil 自带 mcp-server 且参数为 --app desktop",
+        "在 Codex 中执行 /mcp，确认 Pencil 已出现在 MCP 列表",
+        "再继续使用 /mug:d 或复杂页面需求"
+      ]
+    },
+    "cursor": {
+      "title": "移动端 UI 生成器 — Cursor 适配器",
+      "verification": [
+        "打开 Settings -> Tools & MCP",
+        "确认 Pencil 已连接",
+        "打开 .pen 文件后继续进入 /mug:d 或复杂页面流程"
+      ]
+    }
+  }
+}

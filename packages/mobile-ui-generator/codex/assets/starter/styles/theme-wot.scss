@@ -16,6 +16,8 @@ page {
   --wot-cell-title-color: #{$color-text-regular};
   --wot-cell-value-color: #{$color-text-secondary};
   --wot-cell-label-color: #{$color-text-placeholder};
+  --wot-cell-group-title-color: #{$color-text-secondary};
+  --wot-cell-group-title-font-size: #{$font-size-sm};
 
   --wot-navbar-title-font-size: #{$font-size-lg};
   --wot-navbar-title-font-weight: #{$font-weight-bold};
@@ -23,4 +25,14 @@ page {
   --wot-popup-bg-color: #{$color-bg-card};
   --wot-background-color: #{$color-bg-page};
   --wot-border-color: #{$color-border};
+
+  --wot-tag-padding: 2px 8px;
+  --wot-tag-font-size: #{$font-size-sm};
+  --wot-tag-border-radius: #{$radius-round};
+
+  --wot-loading-color: #{$color-primary};
+
+  --wot-toast-bg-color: rgba(30, 30, 30, 0.88);
+  --wot-toast-font-size: #{$font-size-base};
+  --wot-toast-border-radius: #{$radius-lg};
 }

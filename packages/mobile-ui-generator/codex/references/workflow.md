@@ -1,26 +1,67 @@
-# Codex Adapter: Workflow
+# Codex 适配器：工作流
 
-Use this adapter flow in Codex.
+> 命令解析、组合优先级、缺失输入矩阵与状态机的单一事实源：`../../core/command-contract.yaml`
 
-## 1. Classify the Page
+在 Codex 中使用本适配器流程。
 
-- Simple pages: standard forms, normal lists, normal detail pages, base search pages, empty states, ordinary result pages
-- Complex pages: workbench home pages, dashboards, workflow editors, multi-section composite home pages, custom-navigation business home pages, and pages referencing existing Pencil drafts or `.pen` style
+## 1. 判断页面复杂度
 
-## 2. Decide the Path
+### 按页面类型判断
 
-- Simple page: generate directly from the skill rules
-- Complex page: first synthesize a Pencil prompt, then call Pencil MCP if available
-- Pencil unavailable: fall back to the skill rules and keep shipping
+- 简单页面：标准表单、普通列表、普通详情页、基础搜索页、空状态页、普通结果页
+- 复杂页面：工作台首页、数据看板、审批流编排页、多分区复合首页、带自定义导航的业务首页、引用了已有 Pencil 草稿或 `.pen` 风格的页面
 
-## 3. Implement
+### 按需求内容判断（用户提供功能描述或接口信息时使用）
 
-- Use the Pencil output as structure and visual direction only
-- Convert the result into uni-app + Vue 3 + UnoCSS + wot-design-uni code
-- Apply the core design spec and information restraint rules during implementation
+**命中任意 2 条及以上 → 复杂页面：**
 
-## 4. Verify
+| 信号 | 判断依据 |
+|---|---|
+| 接口数量 ≥ 3 个 | 需要同时调用多个接口聚合数据 |
+| 存在多个独立业务模块 | 如「待办 + 快捷入口 + 动态列表」并存于同一页面 |
+| 存在状态流转或审批流 | 状态之间有跳转逻辑 |
+| 存在自定义导航或 tabbar | 非标准页面结构 |
+| 首屏需展示 3 类以上不同性质的数据 | 如统计数字 + 列表 + 操作卡片同屏显示 |
+| 用户角色或权限影响页面内容 | 不同角色看到的模块或操作不同 |
+| 页面包含图表、进度环、统计卡片 | 数据可视化组件 |
+| 需求描述超过 5 个独立功能点 | 功能点数量反映页面信息承载量 |
 
-- Check that the page matches the business scenario and interaction priority
-- Check that the page does not add redundant explanatory text
-- Check that the final UI still looks like an enterprise business system
+**全不命中 → 简单页面，直接生成。**
+
+## 2. 选择路径
+
+- 简单页面：直接按 skill 规则生成
+- 复杂页面或设计先行页面：若 Pencil MCP 可用，必须先给出至少 3 个差异化 UI 方向，再让用户选择
+- 用户选定方向后：再整理对应方向的 Pencil prompt，并进入实现
+- Pencil 不可用：停止当前开发，只输出诊断结果、失败原因和下一步需要用户执行的动作
+- 具体状态流顺序以 `../../core/command-contract.yaml` 为准
+
+## 3. 重构模式
+
+当用户提供参考页面（截图、`.pen` 文件或页面描述）并要求重构另一个页面时，进入重构模式。
+
+- 参考页面只作为**内容来源**：提取模块、数据字段、业务状态和操作入口
+- **不得**照搬参考页面的布局、卡片形态、色块用法或信息分组
+- 在实现任何代码之前，始终给出 **3 个差异化方向**
+
+**方向一：精简聚焦** — 折叠次要信息，首屏只保留核心操作与关键状态，单列平铺
+
+**方向二：模块分区** — 内容划分为独立卡片或分区块，每块有明确标题，均衡密度
+
+**方向三：状态前置** — 状态标签、指标、进度前置首屏，信息密度更高，减少跳转
+
+给出 3 个方向后，请用户选择再实现。如果用户已指定方向，直接实现。
+最终页面必须在视觉和结构上与参考页面明显不同。
+
+## 4. 实现
+
+- 将 Pencil 输出仅作为结构和视觉方向参考
+- 转换为 uni-app + Vue 3 + UnoCSS + wot-design-uni 代码
+- 实现时校验核心设计规范与信息克制规则
+
+## 5. 验收
+
+- 页面与业务场景和交互优先级匹配
+- 页面没有冗余描述文案
+- 最终 UI 仍像企业业务系统
+- 重构模式：最终页面与参考页面在视觉和结构上明显不同

@@ -1,39 +1,75 @@
-# Mobile UI Generator Core Prompt Rules
+# 移动端 UI 生成器 — 核心 Prompt 规则 v4.0
 
-When a page is complex, build a structured Pencil prompt instead of passing the raw user request through unchanged.
+> **注意：所有视觉设计规范、Tokens 和组件用法请参阅：`design-spec.md`。**
 
-## Prompt Must Include
+## 1. 结构化 Prompt 核心要素 (针对所有非 simple 流程)
 
-- Page type and business goal
-- Target users and business scenario
-- Core modules and their priority
-- Style constraints
-- Technical delivery constraints
-- Content restraint rules
-- Reference material if the user provided screenshots, a `.pen` file, or a design draft
+在调用 Pencil 或生成复杂代码前，必须先将用户需求整理为以下结构：
 
-## Style Constraints
+- **方向选择前置**：先提出至少 3 个差异化 UI 方案，让用户选择；未选定前不得直接进入实现。
+- **Pencil 设计必经**：用户选定方案后，必须编写结构化 Prompt 并调用 Pencil 生成设计稿，展示给用户确认；用户未对设计稿明确满意前，不得进入代码实现。选定方案 ≠ 同意设计。
+- **业务场景**：页面所属的业务模块（如：电子签章、审批流、OA首页）。
+- **核心模块**：按优先级列出页面必须包含的功能块（如：状态看板、待办列表、操作金刚区）。
+- **内容约束**：坚持信息克制原则，不添加弱价值文案。
+- **技术栈**：`uni-app + Vue 3 + UnoCSS + wot-design-uni`。
 
-- B-end enterprise tone
-- Rational blue-gray direction
-- Information restraint
-- Weak decoration
-- No marketing-style layout or copy
+## 2. Pencil 专属规则
 
-## Technical Constraints
+使用 Pencil 设计时，应重点描述：
+- **容器结构**：使用 `Section`、`Card` 等语义化布局描述。
+- **信息密度**：明确每个模块的信息展示深度。
+- **交互锚点**：定义按钮、搜索框、筛选器的位置。
+- **微信胶囊适配**：一级页面必须标注胶囊区域安全距离。
 
-- uni-app
-- Vue 3
-- UnoCSS
-- wot-design-uni
+## 3. 设计规范引用
 
-## Content Constraints
+禁止在 Prompt 中重复定义颜色、圆角、间距等具体数值。只需引用规范描述：
+- "遵循 `design-spec.md` 中的标准卡片布局"
+- "使用 `design-spec.md` 定义的业务状态色映射"
+- "采用 `design-spec.md` 的筛选器规范"
+- "表单布局遵循 `design-spec.md` § 5"
+- "列表操作按钮遵循 `design-spec.md` § 6.4"
+- "详情页分组遵循 `design-spec.md` § 7"
 
-- No weak-value descriptions
-- No automatic item counts
-- No generic function explanations
-- No promotional wording
+## 4. 重构模式 Prompt 策略
 
-## Fallback Rule
+当用户要求"重构"或提供参考图/现有代码时：
+- **提取**：仅提取参考页的业务模块、数据字段、状态和操作。
+- **重组**：彻底打破原有布局，按 `design-spec.md` 的规范重新排布。
+- **差异化**：至少提供 3 个不同侧重的布局方案（如：极致精简 vs 模块分区 vs 状态前置）。
+- **Pencil 必经**：重构模式同样必须走 Pencil 设计流程，用户对原 UI 不满意，更需要先看到新设计效果。
 
-- If Pencil MCP is unavailable, keep the same constraints and generate the page directly from the local skill or adapter rules
+## 5. 表单页面 Prompt 规则
+
+当页面类型为表单（`/mug:*:form`）时，结构化 Prompt 必须包含：
+
+- **字段清单**：列出所有字段及其类型（文本 / 数字 / 选择 / 日期 / 开关 / 上传）
+- **必填标注**：每个字段标注必填 / 选填
+- **校验规则**：每个必填字段的校验条件（如：不为空、格式校验、长度限制）
+- **联动逻辑**：字段间的显示/隐藏/值联动关系（如："合同类型"选择"采购"时显示"供应商"字段）
+- **字段分组**：相关字段的分组方式和组名
+- **提交操作**：按钮数量（1 个提交 / 2 个草稿+提交）和位置（底部固定）
+- **Pencil 模板**：使用 `pencil-prompt-template.md` 的 Form Page Template
+
+## 6. 列表页面 Prompt 规则
+
+当页面类型为列表（`/mug:*:list`）时，结构化 Prompt 必须包含：
+
+- **列表项结构**：明确主标题 / 副信息 / 状态 / 时间 / 操作按钮的字段映射
+- **操作按钮**：列出每个按钮的名称和类型（普通 / 危险），标注按钮数量
+- **操作模式**：根据按钮数量和频率选择模式 A（内联+更多）或模式 B（左滑），并说明选择原因
+- **搜索维度**：可搜索的字段（如：名称、编号）
+- **筛选维度**：筛选条件及选项（如：状态 [全部/待审批/已通过]）
+- **状态处理**：空数据、搜索无结果、加载失败的处理方式
+- **Pencil 模板**：使用 `pencil-prompt-template.md` 的 List Page Template
+
+## 7. 详情页面 Prompt 规则
+
+当页面类型为详情（`/mug:*:detail`）时，结构化 Prompt 必须包含：
+
+- **信息分组**：按业务语义分组，标注每组的字段列表和展示优先级
+- **状态字段**：标注状态字段名称及对应的状态色（使用四层状态色体系）
+- **关键字段**：需要视觉强调的字段（如金额使用加粗加大）
+- **时间线**：如有审批记录/操作日志，标注使用时间线展示
+- **底部操作**：按钮数量、每个按钮的名称和类型（主操作 / 次操作 / 危险操作）
+- **Pencil 模板**：使用 `pencil-prompt-template.md` 的 Detail Page Template

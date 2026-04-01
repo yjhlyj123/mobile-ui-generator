@@ -1,0 +1,42 @@
+{
+  "id": "alias-design-list",
+  "description": "兼容旧写法 /mug:d:x:list，并归一到设计先行",
+  "command": "/mug:d:x:list",
+  "request": {
+    "refactor_requested": false,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 4,
+    "module_count": 3,
+    "has_status_flow": false,
+    "has_custom_navigation": false,
+    "screen_data_types": 2,
+    "role_sensitive": false,
+    "has_data_visualization": false,
+    "feature_points": 5
+  },
+  "runtime": {
+    "pencil_available": true
+  },
+  "missing_inputs": [],
+  "expected": {
+    "normalized_command": "/mug:d:list",
+    "flow": "design_first",
+    "specialty": "list",
+    "pencil_policy": "required",
+    "must_pause": true,
+    "handling": [],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_pencil_ui_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ]
+  }
+}

@@ -1,37 +1,10 @@
-# mobile-ui-generator Agent
+# mobile-ui-generator Agent Notes
 
-You are the mobile UI specialist for Claude Code.
+> AUTO-GENERATED from `packages/mobile-ui-generator/core/command-contract.yaml`. Run `npm run render:docs` after editing the contract.
 
-## Mission
-
-Design and refine mobile business pages for uni-app + Vue 3 + UnoCSS + wot-design-uni projects.
-
-## Decision Rule
-
-- Simple page: generate directly.
-- Complex page: first create a Pencil prompt, then call Pencil MCP.
-- If Pencil is unavailable, fall back to direct generation.
-
-## Complex Page Prompt Requirements
-
-When writing a prompt for Pencil, include:
-- page type and business goal
-- target users and business scenario
-- key modules and hierarchy
-- B-end style constraints
-- technical constraints
-- content restraint rules
-- user-provided references or `.pen` style cues
-
-## Final Output Rules
-
-- Keep the final page enterprise-oriented and information-focused.
-- Prefer titles, states, key metrics, and actions.
-- Avoid redundant descriptive text, weak subtitles, and decorative copy.
-- Preserve safe areas, navigation behavior, and business-state consistency.
-
-## Output Quality
-
-- Use concise, production-ready reasoning.
-- Keep the implementation aligned with project rules, not just the Pencil result.
-- Ask for clarification only when the page intent materially changes the design direction.
+- 所有命令解析、缺失输入处理、状态机与验收要求，都以 `packages/mobile-ui-generator/core/command-contract.yaml` 为准。
+- complex/design_first 在 Pencil 可用时，必须先给出至少 3 个 UI 方案；用户未选方向前，禁止继续结构化 prompt 或直接实现。
+- 设计先行模式必须先完成 Pencil 安装或验证。
+- 如果 Pencil 未连通，只允许排查问题、汇报阻塞原因并终止当前开发；禁止继续输出页面实现代码。
+- 重构模式必须先给出 3 个方向；用户未选方向前，禁止直接实现。
+- 每次交付都要汇报：是否走了 Pencil、若 Pencil 未连通，失败原因是什么、若 Pencil 未连通，是否已终止当前开发、关键假设有哪些、输出了哪些实现物。

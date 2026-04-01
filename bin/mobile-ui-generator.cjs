@@ -3,6 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const process = require("node:process");
+const childProcess = require("node:child_process");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const PACKAGE_ROOT = path.join(REPO_ROOT, "packages", "mobile-ui-generator");
@@ -12,13 +13,17 @@ function printHelp() {
 mobile-ui-generator
 
 Usage:
-  mobile-ui-generator install <codex|claude|cursor> [--dest PATH] [--source PATH]
+  mobile-ui-generator install <codex|claude|cursor> [--dest PATH] [--source PATH] [--force]
+  mobile-ui-generator update <codex|claude|cursor> [--dest PATH] [--source PATH]
+  mobile-ui-generator install-pencil-mcp [--client auto|codex|claude|cursor|vscode] [--force] [--no-launch]
   mobile-ui-generator help
 
 Examples:
   mobile-ui-generator install codex
   mobile-ui-generator install claude --dest /path/to/project
-  mobile-ui-generator install cursor --dest /path/to/project
+  mobile-ui-generator install cursor --dest /path/to/project --force
+  mobile-ui-generator update claude
+  mobile-ui-generator install-pencil-mcp --client cursor
 `.trim());
 }
 
@@ -51,6 +56,11 @@ function parseOptions(args) {
       continue;
     }
 
+    if (arg === "-f" || arg === "--force") {
+      options.force = true;
+      continue;
+    }
+
     if (arg === "-h" || arg === "--help") {
       options.help = true;
       continue;
@@ -74,8 +84,12 @@ function installCodex(options) {
     fail(`Source skill not found: ${sourcePath}`);
   }
 
+  if (fs.existsSync(destPath) && !options.force) {
+    fail(`Destination already exists: ${destPath}\nUse --force or "update" to overwrite.`);
+  }
+
   if (fs.existsSync(destPath)) {
-    fail(`Destination already exists: ${destPath}`);
+    console.warn(`Overwriting existing Codex adapter at ${destPath}`);
   }
 
   ensureDir(path.dirname(destPath));
@@ -94,8 +108,12 @@ function installClaude(options) {
   }
 
   const claudeFile = path.join(destRoot, "CLAUDE.md");
+  if (fs.existsSync(claudeFile) && !options.force) {
+    fail(`Destination already has CLAUDE.md: ${claudeFile}\nUse --force or "update" to overwrite.`);
+  }
+
   if (fs.existsSync(claudeFile)) {
-    fail(`Destination already has CLAUDE.md: ${claudeFile}`);
+    console.warn(`Overwriting existing Claude adapter at ${destRoot}`);
   }
 
   ensureDir(path.join(destRoot, ".claude"));
@@ -132,19 +150,46 @@ function installCursor(options) {
 
   ensureDir(path.join(destCursorRoot, "rules"));
 
+  if (fs.existsSync(ruleDest) && !options.force) {
+    fail(`Destination already has Cursor rule: ${ruleDest}\nUse --force or "update" to overwrite.`);
+  }
+
   if (fs.existsSync(ruleDest)) {
-    fail(`Destination already has Cursor rule: ${ruleDest}`);
+    console.warn(`Overwriting existing Cursor rule at ${ruleDest}`);
   }
 
   fs.copyFileSync(ruleSource, ruleDest);
 
   const agentsSource = path.join(sourcePath, "AGENTS.md");
   const agentsDest = path.join(destCursorRoot, "AGENTS.md");
-  if (fs.existsSync(agentsSource) && !fs.existsSync(agentsDest)) {
-    fs.copyFileSync(agentsSource, agentsDest);
+  if (fs.existsSync(agentsSource)) {
+    if (!fs.existsSync(agentsDest) || options.force) {
+      fs.copyFileSync(agentsSource, agentsDest);
+    }
   }
 
   console.log(`Installed Cursor adapter to ${destCursorRoot}`);
+}
+
+function installPencilMcp(args) {
+  const scriptPath = path.join(REPO_ROOT, "scripts", "install-pencil-mcp.sh");
+
+  if (!fs.existsSync(scriptPath)) {
+    fail(`Pencil installer script not found: ${scriptPath}`);
+  }
+
+  const result = childProcess.spawnSync("bash", [scriptPath, ...args], {
+    cwd: REPO_ROOT,
+    stdio: "inherit"
+  });
+
+  if (typeof result.status === "number" && result.status !== 0) {
+    process.exit(result.status);
+  }
+
+  if (result.error) {
+    fail(result.error.message);
+  }
 }
 
 function run() {
@@ -155,7 +200,12 @@ function run() {
     return;
   }
 
-  if (command !== "install") {
+  if (command === "install-pencil-mcp") {
+    installPencilMcp([target, ...rest].filter(Boolean));
+    return;
+  }
+
+  if (command !== "install" && command !== "update") {
     fail(`Unknown command: ${command}`);
   }
 
@@ -168,6 +218,10 @@ function run() {
   if (options.help) {
     printHelp();
     return;
+  }
+
+  if (command === "update") {
+    options.force = true;
   }
 
   if (target === "codex") {

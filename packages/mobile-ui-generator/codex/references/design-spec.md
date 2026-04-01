@@ -1,30 +1,30 @@
-# Codex Adapter: Design Spec
+# Codex 适配器：设计规范
 
-Use this adapter as the Codex-facing summary of the core design rules.
+作为核心设计规则的 Codex 端摘要使用。
 
-## Design Direction
+## 设计方向
 
-- Default to B端 enterprise pages for electronic signature, approval, contract, and workflow scenarios
-- Use a rational blue-gray palette, weak decoration, clear hierarchy, and restrained emphasis
-- Favor information structure, section rhythm, status tags, and spacing over visual packaging
-- Keep the page professional, credible, and calm; do not drift into marketing or portfolio styling
+- 默认面向电子签章、审批、合同、工作流等场景的 B 端企业页面
+- 使用理性蓝灰色板、弱装饰、清晰层级、克制的强调
+- 优先用信息结构、分区节奏、状态标签和留白，而不是视觉包装
+- 保持页面专业、可信、沉稳；不向营销风格或作品集风格漂移
 
-## Information Restraint
+## 信息克制
 
-- Keep only information that helps task completion, status reading, risk handling, or next-step action
-- Do not add weak-value descriptive copy such as "currently X items", "this feature is used for...", or "helps you quickly..."
-- Do not auto-fill section subtitles, functional descriptions, or count hints unless the user explicitly asks for them
-- Allow helper text only for status explanation, validation, risk reminder, empty state guidance, or consequence disclosure
+- 只保留有助于任务完成、状态阅读、风险处理或下一步操作的信息
+- 不添加弱价值描述文案，如「当前共 X 条」「本功能用于……」「帮你快速……」
+- 不自动补充分区副标题、功能说明或数量提示，除非用户明确要求
+- 仅在状态说明、表单校验、风险提醒、空状态引导或后果告知时允许使用辅助文案
 
-## Prohibited Patterns
+## 禁止模式
 
-- No large gradient hero, marketing banner, glass effect, floating icon, or oversized illustration by default
-- No repeated high-saturation color blocks on the same screen
-- No purely decorative copy or generic promotional CTA
-- No exaggerated rounding or exhibition-style home pages for normal business pages
+- 默认不使用大渐变头图、营销 banner、毛玻璃效果、悬浮图标或超大插图
+- 同屏不使用重复的高饱和色块
+- 不使用纯装饰性文案或通用宣传 CTA
+- 普通业务页面不使用过大的圆角或展览式首页处理
 
-## Complex Page Signal
+## 复杂页面信号
 
-- Treat workbench home pages, dashboards, workflow editors, multi-section composite home pages, custom-navigation business home pages, and pages referencing a `.pen` design as complex pages
-- Treat standard forms, normal lists, normal details, base search pages, empty states, and ordinary result pages as simple pages
-- Complex pages should first produce a Pencil prompt before calling Pencil MCP when available
+- 工作台首页、数据看板、审批流编排页、多分区复合首页、带自定义导航的业务首页、引用了 `.pen` 设计的页面，视为复杂页面
+- 标准表单、普通列表、普通详情、基础搜索页、空状态页、普通结果页，视为简单页面
+- 复杂页面应先生成 Pencil prompt，再在 Pencil MCP 可用时调用

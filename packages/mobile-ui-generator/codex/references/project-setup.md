@@ -28,7 +28,11 @@ styles/
 - `mixins.scss`
   放少量确实无法被 UnoCSS 替代的样式能力
 
-如果你想快速开箱，直接从 `skill/assets/starter/styles/` 复制 `tokens.scss` 与 `theme-wot.scss` 作为起点。
+如果你想快速开箱，直接从 `skill/assets/starter/styles/` 复制 `tokens.scss`、`theme-wot.scss` 与 `mixins.scss` 作为起点。
+
+> **关于双色蓝：** `tokens.scss` 中存在两个蓝色变量，分工不同，不可混用：
+> - `$color-primary`（`#0e74ff`）：用于按钮、链接等交互元素主色
+> - `$status-brand-main`（`#2563eb`）：用于状态标签、信息面板等品牌语义色
 
 ## 2. 再建立 UnoCSS 基础层
 
@@ -53,6 +57,8 @@ styles/
 目标是后续页面尽量写语义类，而不是重复拼视觉原子类。
 
 如果你希望少走一步，可以直接把 `skill/assets/starter/uno-shortcuts.ts` 中的 shortcuts 合并进项目的 `uno.config.ts`。
+
+> **颜色同步提示：** `uno-shortcuts.ts` 中的颜色值与 `tokens.scss` 的变量值需保持一致。UnoCSS 无法直接引用 SCSS 变量，需人工同步。`tokens.scss` 是 source of truth，修改颜色时记得同步更新 shortcuts 中对应的硬编码值。
 
 ## 3. 再建立通用业务组件
 

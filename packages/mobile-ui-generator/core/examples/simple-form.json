@@ -1,0 +1,37 @@
+{
+  "id": "simple-form",
+  "description": "简单表单直接实现",
+  "command": "/mug:s",
+  "request": {
+    "refactor_requested": false,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 1,
+    "module_count": 1,
+    "has_status_flow": false,
+    "has_custom_navigation": false,
+    "screen_data_types": 1,
+    "role_sensitive": false,
+    "has_data_visualization": false,
+    "feature_points": 4
+  },
+  "runtime": {
+    "pencil_available": false
+  },
+  "missing_inputs": [],
+  "expected": {
+    "normalized_command": "/mug:s",
+    "flow": "simple",
+    "specialty": null,
+    "pencil_policy": "none",
+    "must_pause": false,
+    "handling": [],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "implement_code",
+      "report_acceptance"
+    ]
+  }
+}

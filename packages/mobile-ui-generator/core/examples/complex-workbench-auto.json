@@ -1,0 +1,42 @@
+{
+  "id": "complex-workbench-auto",
+  "description": "无命令时根据复杂信号进入复杂模式",
+  "command": null,
+  "request": {
+    "refactor_requested": false,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 4,
+    "module_count": 3,
+    "has_status_flow": true,
+    "has_custom_navigation": true,
+    "screen_data_types": 3,
+    "role_sensitive": false,
+    "has_data_visualization": true,
+    "feature_points": 7
+  },
+  "runtime": {
+    "pencil_available": true
+  },
+  "missing_inputs": [],
+  "expected": {
+    "normalized_command": "/mug",
+    "flow": "complex",
+    "specialty": null,
+    "pencil_policy": "optional",
+    "must_pause": true,
+    "handling": [],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_pencil_ui_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ]
+  }
+}

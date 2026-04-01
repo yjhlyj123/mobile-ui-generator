@@ -1,0 +1,46 @@
+{
+  "id": "refactor-without-reference",
+  "description": "缺参考页时禁止进入重构模式",
+  "command": "/mug:x:list",
+  "request": {
+    "refactor_requested": true,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 3,
+    "module_count": 3,
+    "has_status_flow": true,
+    "has_custom_navigation": false,
+    "screen_data_types": 2,
+    "role_sensitive": false,
+    "has_data_visualization": false,
+    "feature_points": 6
+  },
+  "runtime": {
+    "pencil_available": true
+  },
+  "missing_inputs": [
+    "reference_page"
+  ],
+  "expected": {
+    "normalized_command": "/mug:x:list",
+    "flow": "complex",
+    "specialty": "list",
+    "pencil_policy": "optional",
+    "must_pause": true,
+    "handling": [
+      "missing_reference_page"
+    ],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "install_or_verify_pencil",
+      "offer_pencil_ui_directions",
+      "wait_for_direction_choice",
+      "build_structured_prompt",
+      "generate_and_confirm_design",
+      "implement_code",
+      "report_acceptance"
+    ]
+  }
+}
