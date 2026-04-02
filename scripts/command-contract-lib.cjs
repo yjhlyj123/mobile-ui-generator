@@ -307,6 +307,9 @@ function resolveExample(example, contract) {
         ? "try"
         : "none";
 
+  const flowDef = contract.state_flows[flow];
+  const stateFlow = Array.isArray(flowDef) ? flowDef : flowDef.states;
+
   return {
     normalizedCommand: parsed.normalizedCommand,
     specialty: parsed.specialty,
@@ -314,7 +317,7 @@ function resolveExample(example, contract) {
     pencilPolicy,
     mustPause,
     handling,
-    stateFlow: contract.state_flows[flow],
+    stateFlow,
     errors: parsed.errors,
     matchedSignals: inferred.matchedSignals
   };
@@ -378,8 +381,12 @@ function renderAutoDetection(contract) {
 }
 
 function renderStateFlows(contract) {
-  const flowEntries = Object.entries(contract.state_flows).map(([name, states]) => {
+  const flowEntries = Object.entries(contract.state_flows).map(([name, flowDef]) => {
+    const states = Array.isArray(flowDef) ? flowDef : flowDef.states;
+    const annotations = Array.isArray(flowDef) ? {} : (flowDef.state_annotations || {});
     const labels = states.map((stateId) => {
+      const annotation = annotations[stateId];
+      if (annotation) return `${stateId} (${annotation})`;
       const match = contract.execution_states.find((state) => state.id === stateId);
       return match ? `${stateId} (${match.label})` : stateId;
     });
@@ -410,6 +417,53 @@ function renderOutputContracts(contract) {
 
 function renderAcceptance(contract) {
   return contract.acceptance_report.map((item) => `- ${item}`).join("\n");
+}
+
+function renderAdjustmentFlow(contract) {
+  const adj = contract.post_implementation_adjustment;
+  if (!adj) return "";
+  const smallRows = adj.small_adjustment.criteria.map((c) => [c, adj.small_adjustment.action]);
+  const largeRows = adj.large_adjustment.criteria.map((c) => [c, adj.large_adjustment.action]);
+  const rows = [...smallRows, ...largeRows];
+  const table = renderTable(["调整类型", "执行路径"], rows);
+  const rules = adj.rules.map((r) => `- ${r}`).join("\n");
+  return `## 实现后调整流程
+
+${table}
+
+**关键规则**
+
+${rules}`;
+}
+
+function renderProjectContext(contract) {
+  const ctx = contract.project_context;
+  if (!ctx) return "";
+  const fieldRows = Object.entries(ctx.fields).map(([k, v]) => [`\`${k}\``, v]);
+  const table = renderTable(["字段", "说明"], fieldRows);
+  const behaviors = Object.entries(ctx.behavior).map(([, v]) => `- ${v}`).join("\n");
+  return `## 项目上下文（多页面一致性）
+
+Agent 通过 \`${ctx.file}\` 文件在多个页面间保持风格一致。
+
+${table}
+
+**行为规则**
+
+${behaviors}`;
+}
+
+function renderCheckReport(contract) {
+  const check = contract.tokens.utility.check;
+  if (!check || !check.report_sections) return "";
+  const sections = check.report_sections.map((s) => `- ${s}`).join("\n");
+  return `### /mug:check 结构化报告
+
+**检查分组**
+
+${sections}
+
+**输出格式**：${check.report_format}`;
 }
 
 function renderExampleSummary() {
@@ -486,6 +540,8 @@ ${renderOutputContracts(contract)}
 
 ${renderAcceptance(contract)}
 
+${renderAdjustmentFlow(contract)}
+
 ## 黄金示例
 
 ${renderExampleSummary()}
@@ -537,6 +593,14 @@ ${renderOutputContracts(contract)}
 
 ${renderAcceptance(contract)}
 
+${renderAdjustmentFlow(contract)}
+
+${renderProjectContext(contract)}
+
+${renderCoreReferenceSection()}
+
+${renderHardPauseSection()}
+
 ## Pencil 安装与验证
 
 - 优先执行 \`${contract.installer_commands.pencil_npx}\`
@@ -573,6 +637,8 @@ ${renderMissingMatrix(contract)}
 
 ${renderOutputContracts(contract)}
 
+${renderCoreReferenceSection()}
+
 ## Claude Code 内的 Pencil 处理
 
 - 未检测到 Pencil 时，优先执行 \`${contract.installer_commands.pencil_npx}\`
@@ -581,15 +647,20 @@ ${contract.hosts.claude.verification.map((item) => `- ${item}`).join("\n")}
 }
 
 function renderClaudeAgent(contract) {
+  const adj = contract.post_implementation_adjustment;
+  const ctx = contract.project_context;
   return `# mobile-ui-generator Agent Notes
 
 ${contract.generated_notice}
 
 - 所有命令解析、缺失输入处理、状态机与验收要求，都以 \`packages/mobile-ui-generator/core/command-contract.yaml\` 为准。
-- complex/design_first 在 Pencil 可用时，必须先给出至少 3 个 UI 方案；用户未选方向前，禁止继续结构化 prompt 或直接实现。
+- complex/design_first/refactor 在 Pencil 可用时，必须先给出至少 3 个 UI 方案；用户未选方向前，禁止继续结构化 prompt 或直接实现。
 - 设计先行模式必须先完成 Pencil 安装或验证。
 - 如果 Pencil 未连通，只允许排查问题、汇报阻塞原因并终止当前开发；禁止继续输出页面实现代码。
 - 重构模式必须先给出 3 个方向；用户未选方向前，禁止直接实现。
+- 代码实现阶段必须以 Pencil 设计稿为蓝图，逐区块对照还原，偏差须标注。
+- 代码交付后用户要求调整时：${adj ? adj.rules[0] : "先判断调整幅度再执行"}。
+- 多页面开发时必须读取 \`${ctx ? ctx.file : ".mug-project.json"}\` 以保持风格一致。
 - 每次交付都要汇报：${contract.acceptance_report.join("、")}。
 `;
 }
@@ -633,6 +704,10 @@ ${renderOutputContracts(contract)}
 ## 验收汇报
 
 ${renderAcceptance(contract)}
+
+${renderAdjustmentFlow(contract)}
+
+${renderProjectContext(contract)}
 `;
 }
 
@@ -686,6 +761,10 @@ ${renderCoreReferenceSection()}
 
 ${renderHardPauseSection()}
 
+${renderAdjustmentFlow(contract)}
+
+${renderProjectContext(contract)}
+
 ## Pencil 验证
 
 - 优先执行 \`${contract.installer_commands.pencil} --client cursor\`
@@ -728,6 +807,10 @@ ${renderMissingMatrix(contract)}
 ${renderOutputContracts(contract)}
 
 ${renderAcceptance(contract)}
+
+${renderAdjustmentFlow(contract)}
+
+${renderProjectContext(contract)}
 `;
 }
 

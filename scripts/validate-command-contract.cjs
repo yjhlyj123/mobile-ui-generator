@@ -102,7 +102,8 @@ function validateContractShape(contract) {
   }
 
   const stateIds = new Set(contract.execution_states.map((state) => state.id));
-  for (const [flowName, states] of Object.entries(contract.state_flows)) {
+  for (const [flowName, flowDef] of Object.entries(contract.state_flows)) {
+    const states = Array.isArray(flowDef) ? flowDef : flowDef.states;
     for (const stateId of states) {
       if (!stateIds.has(stateId)) {
         fail(`Flow ${flowName} references unknown state: ${stateId}`);

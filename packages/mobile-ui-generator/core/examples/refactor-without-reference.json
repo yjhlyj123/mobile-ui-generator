@@ -26,7 +26,7 @@
     "normalized_command": "/mug:x:list",
     "flow": "complex",
     "specialty": "list",
-    "pencil_policy": "optional",
+    "pencil_policy": "try",
     "must_pause": true,
     "handling": [
       "missing_reference_page"

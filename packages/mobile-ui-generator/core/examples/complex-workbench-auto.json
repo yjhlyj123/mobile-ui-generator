@@ -24,7 +24,7 @@
     "normalized_command": "/mug",
     "flow": "complex",
     "specialty": null,
-    "pencil_policy": "optional",
+    "pencil_policy": "try",
     "must_pause": true,
     "handling": [],
     "state_flow": [

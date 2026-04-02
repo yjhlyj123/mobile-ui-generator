@@ -102,7 +102,17 @@
       "check": {
         "label": "设计自检",
         "summary": "对照 design-spec.md 自检当前页面。",
-        "action": "逐项检查当前页面是否符合设计规范，输出检查报告。"
+        "action": "逐项检查当前页面是否符合设计规范，输出结构化检查报告。",
+        "report_sections": [
+          "基础规范（Token 使用、硬编码颜色、间距规范）",
+          "表单规范（字段高度、标签、校验、分组）",
+          "列表规范（搜索筛选、空状态、操作按钮、加载态）",
+          "详情规范（信息层级、状态标签、时间线、操作栏）",
+          "设计还原度（布局结构、区块顺序、信息层级、间距节奏、色彩方案）",
+          "反 AI 生成感（布局节奏变化、视觉重心、内容真实感、排版层次）",
+          "微信小程序适配（胶囊按钮、安全区域、页面跳转）"
+        ],
+        "report_format": "Markdown 表格，列：检查项 | 状态(✓/✗/N/A) | 说明"
       },
       "help": {
         "label": "帮助",
@@ -292,39 +302,57 @@
       "implement_code",
       "report_acceptance"
     ],
-    "complex": [
-      "detect_mode",
-      "collect_required_inputs",
-      "install_or_verify_pencil",
-      "offer_pencil_ui_directions",
-      "wait_for_direction_choice",
-      "build_structured_prompt",
-      "generate_and_confirm_design",
-      "implement_code",
-      "report_acceptance"
-    ],
-    "design_first": [
-      "detect_mode",
-      "collect_required_inputs",
-      "install_or_verify_pencil",
-      "offer_pencil_ui_directions",
-      "wait_for_direction_choice",
-      "build_structured_prompt",
-      "generate_and_confirm_design",
-      "implement_code",
-      "report_acceptance"
-    ],
-    "refactor": [
-      "detect_mode",
-      "collect_required_inputs",
-      "install_or_verify_pencil",
-      "offer_refactor_directions",
-      "wait_for_direction_choice",
-      "build_structured_prompt",
-      "generate_and_confirm_design",
-      "implement_code",
-      "report_acceptance"
-    ]
+    "complex": {
+      "states": [
+        "detect_mode",
+        "collect_required_inputs",
+        "install_or_verify_pencil",
+        "offer_pencil_ui_directions",
+        "wait_for_direction_choice",
+        "build_structured_prompt",
+        "generate_and_confirm_design",
+        "implement_code",
+        "report_acceptance"
+      ],
+      "state_annotations": {
+        "implement_code": "以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注",
+        "report_acceptance": "按验收契约汇报结果，含设计还原度"
+      }
+    },
+    "design_first": {
+      "states": [
+        "detect_mode",
+        "collect_required_inputs",
+        "install_or_verify_pencil",
+        "offer_pencil_ui_directions",
+        "wait_for_direction_choice",
+        "build_structured_prompt",
+        "generate_and_confirm_design",
+        "implement_code",
+        "report_acceptance"
+      ],
+      "state_annotations": {
+        "implement_code": "以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注",
+        "report_acceptance": "按验收契约汇报结果，含设计还原度"
+      }
+    },
+    "refactor": {
+      "states": [
+        "detect_mode",
+        "collect_required_inputs",
+        "install_or_verify_pencil",
+        "offer_refactor_directions",
+        "wait_for_direction_choice",
+        "build_structured_prompt",
+        "generate_and_confirm_design",
+        "implement_code",
+        "report_acceptance"
+      ],
+      "state_annotations": {
+        "implement_code": "以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注",
+        "report_acceptance": "按验收契约汇报结果，含设计还原度"
+      }
+    }
   },
   "forced_pauses": [
     {
@@ -356,6 +384,12 @@
       "trigger": "complex/design_first/refactor 已调用 Pencil 生成设计稿",
       "must_block_before": "implement_code",
       "message": "必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。"
+    },
+    {
+      "id": "post_delivery_adjustment",
+      "trigger": "代码交付后用户要求调整",
+      "must_block_before": "implement_code",
+      "message": "Agent 必须先判断调整幅度。小调整（文案、间距、颜色、单组件微调）直接改代码；大调整（区块增删、布局结构变化、信息层级重组）必须先回 Pencil 重新设计，用户确认新设计后再改代码。Agent 必须先告知用户判定结果再执行；用户可覆盖判断。"
     }
   ],
   "missing_input_matrix": [
@@ -432,8 +466,52 @@
     "若 Pencil 未连通，失败原因是什么",
     "若 Pencil 未连通，是否已终止当前开发",
     "关键假设有哪些",
-    "输出了哪些实现物"
+    "输出了哪些实现物",
+    "**设计还原度**：逐区块对照 Pencil 设计稿的还原情况，偏差项及原因"
   ],
+  "post_implementation_adjustment": {
+    "small_adjustment": {
+      "criteria": [
+        "文案修改",
+        "间距微调",
+        "颜色调整",
+        "单个组件替换",
+        "字号粗细变化",
+        "显示/隐藏某字段"
+      ],
+      "action": "直接修改代码"
+    },
+    "large_adjustment": {
+      "criteria": [
+        "区块增删",
+        "布局结构变化（横排改纵排、卡片改列表）",
+        "信息层级重组",
+        "首屏重心改变",
+        "多个区块位置互换"
+      ],
+      "action": "先回 Pencil 重新设计，用户确认后再改代码"
+    },
+    "rules": [
+      "Agent 必须先判断并告知用户属于哪一类",
+      "用户可以覆盖判断（如明确说'直接改代码'）",
+      "多个小调整累积效果等同大调整时，主动建议回 Pencil 统一调整"
+    ]
+  },
+  "project_context": {
+    "file": ".mug-project.json",
+    "fields": {
+      "theme": "选定的主题预设 ID（如 blue/orange/green/自定义）",
+      "brand_color": "品牌主色 hex 值",
+      "style_direction": "选定的风格方向描述",
+      "tabbar_style": "Tabbar 风格（如有）",
+      "confirmed_pages": "已完成设计确认的页面列表"
+    },
+    "behavior": {
+      "first_page": "首个页面完成设计选择后，Agent 必须将决策写入 .mug-project.json",
+      "subsequent_pages": "后续页面开发时，Agent 必须先读取 .mug-project.json，沿用已有风格决策，仅询问页面特定细节",
+      "override": "用户可随时要求重新选择风格，Agent 更新 .mug-project.json"
+    }
+  },
   "hosts": {
     "root_readme": {
       "title": "mobile-ui-generator"

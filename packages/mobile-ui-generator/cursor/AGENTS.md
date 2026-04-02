@@ -58,16 +58,17 @@
 - `/mug:unknown`
 
 - `simple`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
-- `complex`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
-- `design_first`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
-- `refactor`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> offer_refactor_directions (输出 3 个重构方向) -> wait_for_direction_choice (等待用户选择方向) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+- `complex`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
+- `design_first`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
+- `refactor`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_refactor_directions (输出 3 个重构方向) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
 
 **强制停顿点**
 - 进入重构模式且用户尚未选择方向：必须先给出 3 个差异化方向，并等待用户选择。
-- complex/design_first 中 Pencil 安装完成但连接仍失败：不得自动降级到纯代码实现；必须先定位 Pencil 连接失败原因并汇报。
-- complex/design_first 中 Pencil 可用但用户尚未选择 UI 方案：必须先给出至少 3 个差异化 UI 方案，并等待用户选择后再继续。
-- complex/design_first 中用户已选定 UI 方案但尚未看到 Pencil 设计稿：选定方案 ≠ 同意设计。用户选完方案后，必须编写结构化 Prompt、调用 Pencil 生成设计稿、展示给用户查看。绝对禁止跳过 Pencil 设计直接写代码。
-- complex/design_first 已调用 Pencil 生成设计稿：必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。
+- complex/design_first/refactor 中 Pencil 安装完成但连接仍失败：不得自动降级到纯代码实现；必须先定位 Pencil 连接失败原因并汇报。
+- complex/design_first/refactor 中 Pencil 可用但用户尚未选择 UI 方案：必须先给出至少 3 个差异化 UI 方案，并等待用户选择后再继续。
+- complex/design_first/refactor 中用户已选定 UI 方案但尚未看到 Pencil 设计稿：选定方案 ≠ 同意设计。用户选完方案后，必须编写结构化 Prompt、调用 Pencil 生成设计稿、展示给用户查看。绝对禁止跳过 Pencil 设计直接写代码。
+- complex/design_first/refactor 已调用 Pencil 生成设计稿：必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。
+- 代码交付后用户要求调整：Agent 必须先判断调整幅度。小调整（文案、间距、颜色、单组件微调）直接改代码；大调整（区块增删、布局结构变化、信息层级重组）必须先回 Pencil 重新设计，用户确认新设计后再改代码。Agent 必须先告知用户判定结果再执行；用户可覆盖判断。
 
 ## ⚠️ 核心引用文件（必读）
 
@@ -93,6 +94,46 @@
 
 > 正确的做法是：输出 3 个方案后，在最后写一句「请选择一个方案（A/B/C），或告诉我需要微调的方向。」然后 **停止输出，等待用户回复**。
 > UI 生成后，写一句「这是为您生成的设计图，请确认是否满意？同意后我将开始编写代码。」然后 **停止输出，等待用户回复**。
+
+## 实现后调整流程
+
+| 调整类型 | 执行路径 |
+| --- | --- |
+| 文案修改 | 直接修改代码 |
+| 间距微调 | 直接修改代码 |
+| 颜色调整 | 直接修改代码 |
+| 单个组件替换 | 直接修改代码 |
+| 字号粗细变化 | 直接修改代码 |
+| 显示/隐藏某字段 | 直接修改代码 |
+| 区块增删 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 布局结构变化（横排改纵排、卡片改列表） | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 信息层级重组 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 首屏重心改变 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 多个区块位置互换 | 先回 Pencil 重新设计，用户确认后再改代码 |
+
+**关键规则**
+
+- Agent 必须先判断并告知用户属于哪一类
+- 用户可以覆盖判断（如明确说'直接改代码'）
+- 多个小调整累积效果等同大调整时，主动建议回 Pencil 统一调整
+
+## 项目上下文（多页面一致性）
+
+Agent 通过 `.mug-project.json` 文件在多个页面间保持风格一致。
+
+| 字段 | 说明 |
+| --- | --- |
+| `theme` | 选定的主题预设 ID（如 blue/orange/green/自定义） |
+| `brand_color` | 品牌主色 hex 值 |
+| `style_direction` | 选定的风格方向描述 |
+| `tabbar_style` | Tabbar 风格（如有） |
+| `confirmed_pages` | 已完成设计确认的页面列表 |
+
+**行为规则**
+
+- 首个页面完成设计选择后，Agent 必须将决策写入 .mug-project.json
+- 后续页面开发时，Agent 必须先读取 .mug-project.json，沿用已有风格决策，仅询问页面特定细节
+- 用户可随时要求重新选择风格，Agent 更新 .mug-project.json
 
 ## Pencil 验证
 
