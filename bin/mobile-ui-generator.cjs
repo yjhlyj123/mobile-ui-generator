@@ -15,14 +15,24 @@ mobile-ui-generator
 Usage:
   mobile-ui-generator install <codex|claude|cursor> [--dest PATH] [--source PATH] [--force]
   mobile-ui-generator update <codex|claude|cursor> [--dest PATH] [--source PATH]
+  mobile-ui-generator upgrade [codex|claude|cursor] [--dest PATH] [--source PATH]
   mobile-ui-generator install-pencil-mcp [--client auto|codex|claude|cursor|vscode] [--force] [--no-launch]
   mobile-ui-generator help
+
+Commands:
+  install   Install adapter to the specified target
+  update    Overwrite existing adapter files (local only)
+  upgrade   Fetch latest version from npm and update adapter(s)
+            Without a target, auto-detects and upgrades all installed adapters
 
 Examples:
   mobile-ui-generator install codex
   mobile-ui-generator install claude --dest /path/to/project
   mobile-ui-generator install cursor --dest /path/to/project --force
   mobile-ui-generator update claude
+  mobile-ui-generator upgrade
+  mobile-ui-generator upgrade codex
+  mobile-ui-generator upgrade claude --dest /path/to/project
   mobile-ui-generator install-pencil-mcp --client cursor
 `.trim());
 }
@@ -192,6 +202,61 @@ function installPencilMcp(args) {
   }
 }
 
+function detectInstalledTargets(dest) {
+  const targets = [];
+  const destRoot = path.resolve(dest || process.cwd());
+
+  // Codex: ~/.codex/skills/mobile-ui-generator/SKILL.md
+  const codexSkill = path.join(
+    process.env.CODEX_HOME || path.join(process.env.HOME || "", ".codex"),
+    "skills", "mobile-ui-generator", "SKILL.md"
+  );
+  if (fs.existsSync(codexSkill)) {
+    targets.push("codex");
+  }
+
+  // Claude: CLAUDE.md in dest root
+  const claudeFile = path.join(destRoot, "CLAUDE.md");
+  if (fs.existsSync(claudeFile)) {
+    try {
+      const content = fs.readFileSync(claudeFile, "utf8");
+      if (content.includes("mobile-ui-generator")) {
+        targets.push("claude");
+      }
+    } catch (_) { /* ignore read errors */ }
+  }
+
+  // Cursor: .cursor/rules/mobile-ui-generator.mdc
+  const cursorRule = path.join(destRoot, ".cursor", "rules", "mobile-ui-generator.mdc");
+  if (fs.existsSync(cursorRule)) {
+    targets.push("cursor");
+  }
+
+  return targets;
+}
+
+function upgradeToLatest(targets, args) {
+  console.log("Fetching latest version from npm...\n");
+
+  for (const target of targets) {
+    console.log(`Upgrading ${target} adapter...`);
+    const result = childProcess.spawnSync(
+      "npx",
+      ["mobile-ui-generator@latest", "update", target, ...args],
+      { stdio: "inherit" }
+    );
+
+    if (result.error) {
+      console.error(`Failed to upgrade ${target}: ${result.error.message}`);
+      continue;
+    }
+
+    if (typeof result.status === "number" && result.status !== 0) {
+      console.error(`Failed to upgrade ${target} (exit code ${result.status})`);
+    }
+  }
+}
+
 function run() {
   const [command, target, ...rest] = process.argv.slice(2);
 
@@ -202,6 +267,33 @@ function run() {
 
   if (command === "install-pencil-mcp") {
     installPencilMcp([target, ...rest].filter(Boolean));
+    return;
+  }
+
+  if (command === "upgrade") {
+    const options = parseOptions([target, ...rest].filter((a) => a && a.startsWith("-")));
+    if (options.help) {
+      printHelp();
+      return;
+    }
+
+    const passArgs = rest.filter(Boolean);
+
+    if (target && !target.startsWith("-")) {
+      // 指定端更新
+      if (!["codex", "claude", "cursor"].includes(target)) {
+        fail(`Unsupported target: ${target}`);
+      }
+      upgradeToLatest([target], passArgs);
+    } else {
+      // 自动检测已安装的端
+      const detected = detectInstalledTargets(options.dest);
+      if (detected.length === 0) {
+        fail("No installed adapters detected. Use 'upgrade <codex|claude|cursor>' to specify a target.");
+      }
+      console.log(`Detected installed adapters: ${detected.join(", ")}`);
+      upgradeToLatest(detected, target ? [target, ...passArgs] : passArgs);
+    }
     return;
   }
 
@@ -243,7 +335,7 @@ function run() {
 }
 
 // When required as a module, export install functions for reuse (e.g. by mug.cjs)
-module.exports = { installCodex, installClaude, installCursor, installPencilMcp, fail, parseOptions };
+module.exports = { installCodex, installClaude, installCursor, installPencilMcp, detectInstalledTargets, upgradeToLatest, fail, parseOptions };
 
 if (require.main === module) {
   run();

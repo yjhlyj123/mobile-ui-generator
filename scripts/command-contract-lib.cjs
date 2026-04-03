@@ -503,6 +503,22 @@ npx mobile-ui-generator install cursor --dest /path/to/project
 npx mobile-ui-generator install cursor --dest /path/to/project --force
 \`\`\`
 
+### 一键升级
+
+\`\`\`bash
+# 自动检测并升级所有已安装的适配器
+npx mobile-ui-generator upgrade
+
+# 指定端升级
+npx mobile-ui-generator upgrade codex
+npx mobile-ui-generator upgrade claude --dest /path/to/project
+npx mobile-ui-generator upgrade cursor --dest /path/to/project
+
+# 简写
+npx mug upgrade
+npx mug upgrade --codex
+\`\`\`
+
 ### Pencil MCP
 
 \`\`\`bash
