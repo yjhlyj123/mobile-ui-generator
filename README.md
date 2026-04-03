@@ -1,179 +1,191 @@
-# Mobile UI Generator
+# mobile-ui-generator
 
-> 面向 Codex / Claude Code / Cursor 的移动端 UI 生成 Skill 套件。
-> 技术栈：uni-app + Vue 3 + UnoCSS + wot-design-uni（微信小程序 + H5）
+> AUTO-GENERATED from `packages/mobile-ui-generator/core/command-contract.yaml`. Run `npm run render:docs` after editing the contract.
 
----
+一个面向 `Codex`、`Claude Code`、`Cursor` 的移动端 UI 生成 skill 套件。当前命令系统以 `packages/mobile-ui-generator/core/command-contract.yaml` 作为单一事实源，并通过脚本生成各端说明文档。
 
-## 它能做什么
+## 安装
 
-通过 `/mug` 命令驱动 AI 生成符合设计规范的移动端页面代码。支持从简单页面直出到 Pencil 设计稿驱动的完整工作流。
-
-**典型场景：**
+### Codex
 
 ```bash
-/mug:s 做一个用户列表页，包含搜索和状态筛选      # 简单页面，直接出代码
-/mug:x 做一个工作台首页，有待办、统计、快捷入口   # 复杂页面，先出 3 个方案再选
-/mug:d 做一个合同管理数据看板，有图表和审批流     # 设计先行，Pencil 出图 → 确认 → 写代码
-/mug:s:form 做一个合同录入表单，含联动校验        # 表单专项
-```
-
----
-
-## 快速开始
-
-### 1. 安装
-
-```bash
-# Codex
 npx mobile-ui-generator install codex
-
-# Claude Code
-npx mobile-ui-generator install claude --dest /path/to/project
-
-# Cursor
-npx mobile-ui-generator install cursor --dest /path/to/project
+npx mobile-ui-generator update codex
 ```
 
-### 2. 验证
+### Claude Code
 
-在 AI 对话中输入 `/mug:help`，看到命令列表即安装成功。
+```bash
+npx mobile-ui-generator install claude --dest /path/to/project
+npx mobile-ui-generator update claude --dest /path/to/project
+```
 
-### 3. 安装 Pencil（可选，复杂/设计模式需要）
+### Cursor
+
+```bash
+npx mobile-ui-generator install cursor --dest /path/to/project
+npx mobile-ui-generator install cursor --dest /path/to/project --force
+```
+
+### Pencil MCP
 
 ```bash
 npx mobile-ui-generator install-pencil-mcp
-# 指定客户端：--client cursor | codex | claude
+npx mobile-ui-generator install-pencil-mcp --client cursor
+npx mobile-ui-generator install-pencil-mcp --client codex
+npx mobile-ui-generator install-pencil-mcp --client claude
 ```
 
----
+## 命令契约
 
-## 命令速查
+| 命令 | 模式 | 说明 |
+| --- | --- | --- |
+| /mug:s | 简单模式 | 直接进入代码实现，不引入 Pencil 设计流。 |
+| /mug:x | 复杂模式 | 先整理结构化 prompt，再尝试 Pencil，最后落代码。 |
+| /mug:d | 设计先行 | 先确保 Pencil 可用，再执行设计流与代码实现。 |
+| /mug:form | 表单专项 | 作为专项修饰符，聚焦 表单布局、校验、联动、录入效率 |
+| /mug:list | 列表专项 | 作为专项修饰符，聚焦 搜索、筛选、空状态、列表密度 |
+| /mug:detail | 详情专项 | 作为专项修饰符，聚焦 信息层级、状态表达、操作入口 |
 
-### 复杂度模式
+## 组合与优先级
 
-| 命令 | 模式 | 工作流 |
-|------|------|--------|
-| `/mug:s` | 简单 | 直接出代码 |
-| `/mug:x` | 复杂 | 3 个方案 → 选方案 → Pencil 设计 → 确认 → 出代码 |
-| `/mug:d` | 设计先行 | 同复杂模式，但强制要求 Pencil 可用 |
-| `/mug` | 自动判定 | 根据复杂度信号自动选择简单或复杂模式 |
+- 优先级：`d > x > s`
+- form/list/detail 作为页面类型修饰符，不改变复杂度主判定。
 
-> 优先级：`d > x > s`。无命令时，命中 ≥2 条复杂信号自动进入复杂模式。
+**允许的命令形态**
+- `/mug`
+- `/mug:s`
+- `/mug:x`
+- `/mug:d`
+- `/mug:form`
+- `/mug:list`
+- `/mug:detail`
+- `/mug:s:form`
+- `/mug:s:list`
+- `/mug:s:detail`
+- `/mug:x:form`
+- `/mug:x:list`
+- `/mug:x:detail`
+- `/mug:d:form`
+- `/mug:d:list`
+- `/mug:d:detail`
+- `/mug:d:x`
+- `/mug:d:x:form`
+- `/mug:d:x:list`
+- `/mug:d:x:detail`
+- `/mug:theme`
+- `/mug:tabbar`
+- `/mug:check`
+- `/mug:help`
 
-### 页面类型修饰符
+**兼容别名**
+- `/mug:d:x` -> `/mug:d`：兼容旧写法，推荐只写 /mug:d。
 
-| 修饰符 | 聚焦领域 |
-|--------|----------|
-| `:form` | 表单布局、校验、联动、录入效率 |
-| `:list` | 搜索、筛选、空状态、操作按钮、列表密度 |
-| `:detail` | 信息层级、状态表达、操作入口 |
+**明确禁止**
+- `/mug:s:x`
+- `/mug:s:d`
+- `/mug:s:d:form`
+- `/mug:form:list`
+- `/mug:detail:list`
+- `/mug:unknown`
 
-修饰符可与模式组合使用：`/mug:x:form`、`/mug:d:list`、`/mug:s:detail`
+## 自动判定
 
-### 工具命令
+- 无命令时，命中复杂信号达到 `2` 条及以上，解析为复杂模式。
+- 未达到阈值时，默认解析为 `simple`。
 
-| 命令 | 说明 |
-|------|------|
-| `/mug:theme` | 预览和切换主题（商务蓝 / 活力橙 / 清新绿） |
-| `/mug:tabbar` | 生成 Tabbar 页面套件（4 种预设风格） |
-| `/mug:check` | 对照设计规范自检当前页面 |
-| `/mug:help` | 查看命令帮助 |
+| 复杂信号 | 说明 |
+| --- | --- |
+| 接口数量 ≥ 3 | 需要聚合多个接口数据。 |
+| 独立业务模块 ≥ 3 | 同屏存在多个独立模块。 |
+| 存在状态流转或审批流 | 页面存在明确的业务状态跳转。 |
+| 存在自定义导航或 Tabbar | 页面结构超出普通单页。 |
+| 首屏需展示 3 类以上不同性质的数据 | 同屏出现指标、列表、操作区等多类数据。 |
+| 用户角色影响页面内容 | 不同角色看到的模块或操作不同。 |
+| 包含图表或统计卡片 | 页面出现图表、进度环、统计卡片。 |
+| 独立功能点 > 5 | 功能点较多，信息承载显著增加。 |
 
----
+## 执行状态机
 
-## 工作流概览
+- `simple`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> implement_code (实现代码) -> report_acceptance (按验收契约汇报结果)
+- `complex`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
+- `design_first`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_pencil_ui_directions (输出至少 3 个 UI 方案) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
+- `refactor`：detect_mode (识别命令与复杂度) -> collect_required_inputs (收集必要输入并补默认假设) -> install_or_verify_pencil (安装或验证 Pencil) -> offer_refactor_directions (输出 3 个重构方向) -> wait_for_direction_choice (等待用户选择方向) -> build_structured_prompt (生成结构化 prompt) -> generate_and_confirm_design (调用 Pencil 画图并等待确认) -> implement_code (以 Pencil 设计稿为蓝图实现代码，逐区块对照还原，偏差须标注) -> report_acceptance (按验收契约汇报结果，含设计还原度)
 
-```
-用户输入 /mug 命令
-       ↓
-  解析命令 & 判定复杂度
-       ↓
-  ┌─ 简单模式 ────→ 收集输入 → 直接写代码 → 验收汇报
-  │
-  └─ 复杂/设计先行 → 收集输入 → 验证 Pencil
-                          ↓
-                    输出 3 个差异化方案 ← 用户选择
-                          ↓
-                    编写结构化 Prompt → 调用 Pencil 出图
-                          ↓
-                    展示设计稿 ← 用户确认（可反复修改）
-                          ↓
-                    以设计稿为蓝图写代码 → 验收汇报
-```
+**强制停顿点**
+- 进入重构模式且用户尚未选择方向：必须先给出 3 个差异化方向，并等待用户选择。
+- complex/design_first/refactor 中 Pencil 安装完成但连接仍失败：不得自动降级到纯代码实现；必须先定位 Pencil 连接失败原因并汇报。
+- complex/design_first/refactor 中 Pencil 可用但用户尚未选择 UI 方案：必须先给出至少 3 个差异化 UI 方案，并等待用户选择后再继续。
+- complex/design_first/refactor 中用户已选定 UI 方案但尚未看到 Pencil 设计稿：选定方案 ≠ 同意设计。用户选完方案后，必须编写结构化 Prompt、调用 Pencil 生成设计稿、展示给用户查看。绝对禁止跳过 Pencil 设计直接写代码。
+- complex/design_first/refactor 已调用 Pencil 生成设计稿：必须将 Pencil 设计稿展示给用户，并明确询问用户是否满意此设计；用户可以要求反复修改设计稿；只有用户明确说可以写代码了或类似确认语句后，才能进入代码实现。绝对禁止没有得到用户对设计稿的明确同意就自动进入代码实现环节。
+- 代码交付后用户要求调整：Agent 必须先判断调整幅度。小调整（文案、间距、颜色、单组件微调）直接改代码；大调整（区块增删、布局结构变化、信息层级重组）必须先回 Pencil 重新设计，用户确认新设计后再改代码。Agent 必须先告知用户判定结果再执行；用户可覆盖判断。
+- complex/design_first/refactor 进入计划模式（plan mode）：计划模式不是绕过设计流的理由。计划中必须包含完整的 Pencil 设计流程步骤：1) Pencil 安装/验证；2) 输出至少 3 个 UI 方案并等待用户选择；3) 调用 Pencil 生成设计稿；4) 展示设计稿并等待用户明确确认；5) 确认后才安排代码实现。绝对禁止在计划中跳过 Pencil 设计步骤直接安排代码实现。
 
-**关键规则：**
-- 复杂模式必须先给 3 个方案，用户选定后才能继续
-- 选定方案 ≠ 同意设计：必须调用 Pencil 出图并获得用户明确确认
-- Pencil 连接失败时停在排查阶段，不自动降级为纯代码
+## 输入缺失处理矩阵
 
----
+| 缺失项 | 允许动作 | 必须说明 | 模式影响 |
+| --- | --- | --- | --- |
+| 缺截图 | 允许按文字需求实现 | 必须标记“无视觉参考” | 保持原模式 |
+| 缺现有页面代码 | 允许从零生成 | 不得声称“重构已完成” | 重构模式可继续，但要明确缺少目标代码上下文 |
+| 缺字段/接口 | 允许生成 stub 结构 | 必须列出关键假设 | 保持原模式 |
+| 缺参考页 | 禁止进入重构模式，改走普通生成模式 | 必须明确说明未进入重构模式 | 从 refactor 回退到 simple/complex/design_first |
+| 缺 Pencil | 必须先执行安装、验证与诊断 | 优先调用 mobile-ui-generator install-pencil-mcp；若连接失败，必须定位根因、停止当前开发并阻塞，不得自动降级 | complex/design_first/refactor 先走安装校验，连接失败时终止当前开发并停在排查阶段 |
 
-## 设计规范体系
+## 输出契约
 
-所有规范集中在 `packages/mobile-ui-generator/core/` 目录下：
+- `simple`：直接产出页面实现代码；如缺字段，附带假设项
+- `complex`：先给出至少 3 个 UI 方案；用户未选方案前不得继续结构化 prompt 或实现；用户选定后再产出结构化 prompt；若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码；若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码；再产出页面实现代码；说明是否成功走到 Pencil
+- `design_first`：先说明 Pencil 验证或安装结果；再给出至少 3 个 UI 方案；用户未选方案前不得继续结构化 prompt / 设计意图或实现；用户选定后再产出结构化 prompt / 设计意图；若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码；若 Pencil 连通，必须调用 Pencil 生成图并明确询问用户是否接受，未同意前不得产出页面实现代码；最后产出页面实现代码
+- `refactor`：先给出 3 个差异化重构方向；用户未选方向前不得直接实现；用户选定方向后再产出结构化 prompt；若 Pencil 未连通，只允许输出诊断与阻塞结论，不得产出页面实现代码；若 Pencil 连通，必须调用 Pencil 生成设计稿并展示给用户确认，未同意前不得写代码；实现后说明与参考页的差异点
 
-| 文件 | 内容 |
-|------|------|
-| `design-spec.md` | **核心规范**：Design Tokens、布局、表单、列表、详情页、弹窗浮层、图片处理、长列表性能、数据可视化、输入法适配、异常状态、权限角色、自检清单 |
-| `design-guidance.md` | 设计引导流程：需求收集 → 风格推荐 → 方案选择 → Pencil 确认 → 迭代 |
-| `prompt-rules.md` | Pencil Prompt 编写规则 + 反 AI 生成感规则 |
-| `pencil-prompt-template.md` | 5 类页面的结构化 Prompt 模板 |
-| `page-hierarchy.md` | 一级/二级页面差异规范 |
-| `tabbar-styles.md` | 4 种 Tabbar 首页风格预设 |
-| `theming.md` | 主题系统（预设 + 自定义 + 运行时切换） |
-| `ui-direction-template.md` | UI 方案输出模板 |
-| `workflow.md` | 完整工作流定义 |
-| `command-contract.yaml` | 命令契约（单一事实源） |
-| `extensibility.md` | 扩展机制（新页面类型、新主题、新端适配器） |
+## 验收汇报
 
-### Design Tokens 速览
+- 是否走了 Pencil
+- 若 Pencil 未连通，失败原因是什么
+- 若 Pencil 未连通，是否已终止当前开发
+- 关键假设有哪些
+- 输出了哪些实现物
+- **设计还原度**：逐区块对照 Pencil 设计稿的还原情况，偏差项及原因
 
-```
-品牌色    $color-primary (#0E74FF)    功能色    成功/警告/危险/信息
-字号      10-26px（7 级）              字重      400-800（5 级）
-间距      4-40px（8 级）               圆角      8px / 18px
-阴影      5 级（sm → xl）              层级      6 级（base → loading）
-动效      150/250/400ms               状态色    四层体系（主/浅底/描边/文字）
-```
+## 实现后调整流程
 
----
+| 调整类型 | 执行路径 |
+| --- | --- |
+| 文案修改 | 直接修改代码 |
+| 间距微调 | 直接修改代码 |
+| 颜色调整 | 直接修改代码 |
+| 单个组件替换 | 直接修改代码 |
+| 字号粗细变化 | 直接修改代码 |
+| 显示/隐藏某字段 | 直接修改代码 |
+| 区块增删 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 布局结构变化（横排改纵排、卡片改列表） | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 信息层级重组 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 首屏重心改变 | 先回 Pencil 重新设计，用户确认后再改代码 |
+| 多个区块位置互换 | 先回 Pencil 重新设计，用户确认后再改代码 |
 
-## 项目结构
+**关键规则**
 
-```
-mobile-ui-generator-suite/
-├── packages/mobile-ui-generator/
-│   ├── core/               # 共享规范（单一事实源）
-│   │   ├── tokens/          #   Design Token 文件（SCSS / TS）
-│   │   └── examples/        #   黄金示例（JSON）
-│   ├── claude/              # Claude Code 适配器
-│   ├── codex/               # Codex 适配器
-│   │   ├── references/      #   规范副本
-│   │   └── assets/          #   空状态占位图等资源
-│   └── cursor/              # Cursor 适配器
-├── scripts/                 # 安装/生成/校验脚本
-├── bin/                     # CLI 入口
-└── package.json
-```
+- Agent 必须先判断并告知用户属于哪一类
+- 用户可以覆盖判断（如明确说'直接改代码'）
+- 多个小调整累积效果等同大调整时，主动建议回 Pencil 统一调整
 
-**核心原则：** `core/` 是规范唯一可信来源。各端适配器（claude/codex/cursor）引用 core，不做独立分叉。命令文档由 `command-contract.yaml` 自动生成。
+## 黄金示例
 
----
+- `alias-design-list`：兼容旧写法 /mug:d:x:list，并归一到设计先行
+- `complex-workbench-auto`：无命令时根据复杂信号进入复杂模式
+- `design-first-missing-pencil`：设计先行时缺 Pencil，必须先进入安装验证
+- `detail-specialty`：/mug:s:detail 完整详情示例 — 合同详情，三层头部 + 附件 + 关联付款记录
+- `form-specialty`：/mug:s:form 完整表单示例 — 合同新建表单，含自动推断校验规则和键盘类型
+- `list-specialty`：/mug:s:list 完整列表示例 — 审批列表，信息密集型变体，含状态筛选和操作按钮
+- `refactor-with-pencil`：重构模式必须走 Pencil 设计流程：选方向 → Pencil 设计 → 用户确认 → 写代码
+- `refactor-with-reference`：有参考页的重构模式必须先停在方向选择
+- `refactor-without-reference`：缺参考页时禁止进入重构模式
+- `simple-form`：简单表单直接实现
 
-## 开发
+## 开发命令
 
 ```bash
-npm run render:docs          # 从 command-contract.yaml 生成各端文档
-npm run validate:contract    # 校验命令契约一致性
-npm run check                # 运行完整检查
+npm run render:docs
+npm run validate:contract
+npm run check
 ```
-
----
-
-## 更多
-
-- 极简上手指南：[QUICK-START.md](./QUICK-START.md)
-- 设计规范详情：[core/design-spec.md](./packages/mobile-ui-generator/core/design-spec.md)
-- 主题定制：[core/theming.md](./packages/mobile-ui-generator/core/theming.md)
-- 扩展开发：[core/extensibility.md](./packages/mobile-ui-generator/core/extensibility.md)

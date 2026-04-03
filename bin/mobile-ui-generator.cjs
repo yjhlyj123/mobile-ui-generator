@@ -242,4 +242,9 @@ function run() {
   fail(`Unsupported target: ${target}`);
 }
 
-run();
+// When required as a module, export install functions for reuse (e.g. by mug.cjs)
+module.exports = { installCodex, installClaude, installCursor, installPencilMcp, fail, parseOptions };
+
+if (require.main === module) {
+  run();
+}

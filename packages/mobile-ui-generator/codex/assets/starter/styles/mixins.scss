@@ -36,3 +36,29 @@
     transform-origin: #{$position};
   }
 }
+
+// 表单字段对齐 — §5.5 对齐规范
+@mixin form-field-align {
+  :deep(.wd-cell__title) {
+    text-align: left;
+  }
+
+  :deep(.wd-cell__value),
+  :deep(.wd-input__inner),
+  :deep(.wd-textarea__inner) {
+    text-align: right;
+  }
+
+  :deep(.wd-input__inner)::placeholder,
+  :deep(.wd-textarea__inner)::placeholder {
+    text-align: right;
+  }
+}
+
+// 详情字段可交互样式
+@mixin detail-field-interactive {
+  color: $color-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+}

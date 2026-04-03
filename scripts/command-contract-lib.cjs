@@ -688,6 +688,10 @@ ${renderCombinationRules(contract)}
 
 ${renderStateFlows(contract)}
 
+${renderCoreReferenceSection()}
+
+${renderHardPauseSection()}
+
 ## 缺失输入处理
 
 ${renderMissingMatrix(contract)}
@@ -734,7 +738,9 @@ function renderHardPauseSection() {
 2. **design_first / complex 模式选定方案后**：生成结构化 Prompt 后，**必须调用 Pencil MCP 生成 UI，并明确询问用户是否接受该 UI**。在用户明确同意之前，**绝对禁止** 进入 \`implement_code\` 阶段。
 3. **refactor 模式**：在用户选择重构方向之前，**绝对禁止** 进入 \`implement_code\` 阶段。
 4. **Pencil 未连通时**：**绝对禁止** 产出页面实现代码。只允许输出诊断和阻塞结论。
-5. 如果你在用户未选择/未确认 UI 之前就开始写代码，**你的输出将被视为无效**，用户将要求你重新执行。
+5. **计划模式（plan mode）**：计划模式不是绕过设计流的理由。当 complex / design_first / refactor 进入计划模式时，计划中 **必须** 包含完整的 Pencil 设计流程：Pencil 验证 → 输出 UI 方案 → 等待用户选择 → 调用 Pencil 生成设计稿 → 等待用户确认设计 → 代码实现。**绝对禁止** 在计划中跳过 Pencil 设计步骤直接安排代码实现。
+6. **\`.pen\` 文件处理**：进入 Pencil 设计步骤时，若用户提供了 \`.pen\` 文件则使用 \`open_document\` 打开；若用户未提供，则使用 \`open_document\` 传入 \`'new'\` 创建新文件。**禁止因缺少 \`.pen\` 文件而跳过设计步骤。**
+7. 如果你在用户未选择/未确认 UI 之前就开始写代码，**你的输出将被视为无效**，用户将要求你重新执行。
 
 > 正确的做法是：输出 3 个方案后，在最后写一句「请选择一个方案（A/B/C），或告诉我需要微调的方向。」然后 **停止输出，等待用户回复**。
 > UI 生成后，写一句「这是为您生成的设计图，请确认是否满意？同意后我将开始编写代码。」然后 **停止输出，等待用户回复**。`;

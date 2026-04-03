@@ -1,6 +1,6 @@
 {
   "name": "mobile-ui-generator",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Cross-agent mobile UI generator for Codex, Claude Code, and Cursor.",
   "license": "MIT",
   "repository": {
@@ -13,7 +13,8 @@
   },
   "type": "commonjs",
   "bin": {
-    "mobile-ui-generator": "bin/mobile-ui-generator.cjs"
+    "mobile-ui-generator": "bin/mobile-ui-generator.cjs",
+    "mug": "bin/mug.cjs"
   },
   "files": [
     "bin",

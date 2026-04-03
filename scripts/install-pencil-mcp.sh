@@ -256,6 +256,12 @@ find_pencil_mcp_server() {
   shopt -s nullglob
   local -a candidates=()
 
+  # 优先查找 IDE 插件（Cursor / VS Code），再查找桌面应用
+  candidates+=(
+    "$HOME/.cursor/extensions"/highagency.pencildev-*/out/"$binary_name"
+    "$HOME/.vscode/extensions"/highagency.pencildev-*/out/"$binary_name"
+  )
+
   if [[ -n "$installed_path" && -d "$installed_path" ]]; then
     candidates+=("$installed_path/Contents/Resources/app.asar.unpacked/out/$binary_name")
   fi
@@ -263,8 +269,6 @@ find_pencil_mcp_server() {
   candidates+=(
     "/Applications/$PENCIL_APP_NAME/Contents/Resources/app.asar.unpacked/out/$binary_name"
     "$HOME/Applications/$PENCIL_APP_NAME/Contents/Resources/app.asar.unpacked/out/$binary_name"
-    "$HOME/.cursor/extensions"/highagency.pencildev-*/out/"$binary_name"
-    "$HOME/.vscode/extensions"/highagency.pencildev-*/out/"$binary_name"
   )
 
   for candidate in "${candidates[@]}"; do
@@ -287,6 +291,7 @@ configure_codex_mcp() {
     fail "Codex CLI not found. Install Codex and enable its shell command first."
   fi
 
+  # find_pencil_mcp_server 已按 IDE 插件优先、桌面应用兜底的顺序查找
   server_path="$(find_pencil_mcp_server "$installed_path")"
   existing_config="$(codex mcp get pencil 2>/dev/null || true)"
 
@@ -424,7 +429,15 @@ main() {
       print_vscode_verification
       ;;
     codex)
-      installed_path="$(install_desktop_app)"
+      # 优先检查是否已有 IDE 插件的 mcp-server 可用，避免强制安装桌面应用
+      local existing_server=""
+      existing_server="$(find_pencil_mcp_server "" 2>/dev/null || true)"
+      if [[ -n "$existing_server" && "$FORCE" -ne 1 ]]; then
+        log "Found existing Pencil MCP server via IDE extension: $existing_server"
+        installed_path=""
+      else
+        installed_path="$(install_desktop_app)"
+      fi
       configure_codex_mcp "$installed_path"
       print_common_next_steps
       print_codex_verification

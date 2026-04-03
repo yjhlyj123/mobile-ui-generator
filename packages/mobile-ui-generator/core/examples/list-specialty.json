@@ -1,0 +1,61 @@
+{
+  "id": "list-specialty",
+  "description": "/mug:s:list 完整列表示例 — 审批列表，信息密集型变体，含状态筛选和操作按钮",
+  "command": "/mug:s:list",
+  "user_input": "审批列表，字段：申请标题、申请人、部门、申请金额、申请时间、审批状态，操作：查看、审批",
+  "auto_inferred": {
+    "layout_variant": "信息密集型 — §6.8 推断：含金额+状态 → 信息密集型",
+    "title_field": "申请标题 — §6.7 推断：含'标题' → 主标题",
+    "status_field": "审批状态 — §6.7 推断：含'状态' → StatusTag",
+    "amount_field": "申请金额 — §6.7 推断：含'金额' → 右侧加粗 formatAmount()",
+    "time_field": "申请时间 — §6.7 推断：含'时间' → 副信息 formatRelativeTime()",
+    "meta_fields": "申请人 · 部门 · 相对时间 — §6.7 副信息用 · 分隔",
+    "filter_pills": "审批状态 → 自动生成 Filter Pill：全部/待审批/已通过/已驳回",
+    "search": "申请标题 → 搜索范围",
+    "button_pattern": "2 个操作（查看+审批）→ 右侧并排，审批为主操作（§6.4）",
+    "amount_format": "申请金额 → formatAmount() + ¥ 前缀（§6.6）",
+    "skeleton": "列表页骨架屏：搜索栏 + Filter Pill + 3 个列表项（§8.3.1）"
+  },
+  "request": {
+    "refactor_requested": false,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 1,
+    "module_count": 2,
+    "has_status_flow": true,
+    "has_custom_navigation": false,
+    "screen_data_types": 1,
+    "role_sensitive": false,
+    "has_data_visualization": false,
+    "feature_points": 5
+  },
+  "runtime": {
+    "pencil_available": false
+  },
+  "missing_inputs": [],
+  "expected": {
+    "normalized_command": "/mug:s:list",
+    "flow": "simple",
+    "specialty": "list",
+    "pencil_policy": "none",
+    "must_pause": false,
+    "handling": [],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "implement_code",
+      "report_acceptance"
+    ],
+    "vue_code_reference": "ApprovalList.vue — 审批列表示例",
+    "vue_code_highlights": [
+      "// §6.8 信息密集型变体：主标题 + 右侧金额 + 副信息行 + 状态/操作行",
+      "// §6.7 智能推断：申请标题→主标题，审批状态→StatusTag，申请金额→formatAmount()",
+      "// §6.6 格式化：formatAmount(item.applyAmount)，formatRelativeTime(item.applyTime)",
+      "// §6.3 搜索与筛选：wd-search 吸顶 + Filter Pill 状态筛选",
+      "// §8.3.1 列表页骨架屏：搜索栏 + Filter Pill + 3 个列表项骨架",
+      "// §8.13 错误处理：首次失败 EmptyState，加载更多失败 loadmore error",
+      "// §8.12 导航：点击查看 → uni.navigateTo 传 id"
+    ]
+  }
+}

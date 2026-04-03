@@ -1,0 +1,65 @@
+{
+  "id": "detail-specialty",
+  "description": "/mug:s:detail 完整详情示例 — 合同详情，三层头部 + 附件 + 关联付款记录",
+  "command": "/mug:s:detail",
+  "user_input": "合同详情页，字段：合同名称、合同编号、合同类型、合同金额、签署日期、联系人手机、备注、附件图片，关联数据：付款记录，底部操作：编辑、审批",
+  "auto_inferred": {
+    "head_layer1": "合同名称 + StatusTag — §7.5 第一层：标题+状态",
+    "head_layer2": "合同金额 ¥ 125,000.00 — §7.5 第二层：有金额字段 → 展示金额",
+    "head_layer3": "创建人 · 部门 · 签署日期 — §7.5 第三层：元信息",
+    "field_infer": {
+      "合同编号": "§7.4 推断：含'编号' → 等宽字体 + 复制图标",
+      "合同金额": "§7.4 推断：含'金额' → 加粗放大 $font-weight-bold + $font-size-md",
+      "联系人手机": "§7.4 推断：含'手机' → 脱敏 + 拨号图标 uni.makePhoneCall",
+      "签署日期": "§7.4 推断：含'日期' → 中文格式 YYYY年MM月DD日",
+      "备注": "§7.4 推断：含'备注' → 完整多行展示",
+      "附件图片": "§7.4 推断：含'附件' → §7.6 图片网格展示"
+    },
+    "related_data": "付款记录 → §7.7 关联数据：最多展示 3 条 + '查看全部'",
+    "skeleton": "详情页骨架屏：头部 + 分组标题 + 4 个 label-value 行（§8.3.1）",
+    "bottom_actions": "2 个按钮：编辑（次操作）+ 审批（主操作）→ §7.3 左次右主"
+  },
+  "request": {
+    "refactor_requested": false,
+    "direction_selected": false
+  },
+  "traits": {
+    "api_count": 2,
+    "module_count": 3,
+    "has_status_flow": true,
+    "has_custom_navigation": false,
+    "screen_data_types": 2,
+    "role_sensitive": false,
+    "has_data_visualization": false,
+    "feature_points": 6
+  },
+  "runtime": {
+    "pencil_available": false
+  },
+  "missing_inputs": [],
+  "expected": {
+    "normalized_command": "/mug:s:detail",
+    "flow": "simple",
+    "specialty": "detail",
+    "pencil_policy": "none",
+    "must_pause": false,
+    "handling": [],
+    "state_flow": [
+      "detect_mode",
+      "collect_required_inputs",
+      "implement_code",
+      "report_acceptance"
+    ],
+    "vue_code_reference": "ContractDetail.vue — 合同详情示例",
+    "vue_code_highlights": [
+      "// §7.5 三层头部：标题+StatusTag → 金额加粗 → 元信息",
+      "// §7.4 智能推断：合同编号→复制，合同金额→加粗，联系人手机→拨号",
+      "// §7.6 附件展示：图片网格 3 列，点击 uni.previewImage",
+      "// §7.7 关联数据：付款记录最多 3 条 + '查看全部 N 条 >'",
+      "// §7.3 底部操作栏：编辑（次操作 plain）+ 审批（主操作 primary）",
+      "// §8.3.1 详情页骨架屏：头部区域 + 4 个字段行",
+      "// §8.13 错误处理：404 → EmptyState '内容不存在或已删除'",
+      "// §8.12 导航：编辑 → navigateTo ?id=xx&mode=edit"
+    ]
+  }
+}
