@@ -21,6 +21,13 @@ required_files=(
   "$REPO_ROOT/packages/mobile-ui-generator/core/design-guidance.md"
   "$REPO_ROOT/packages/mobile-ui-generator/core/theming.md"
   "$REPO_ROOT/packages/mobile-ui-generator/core/extensibility.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/design-arsenal.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/visual-prompt-examples/workbench.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/visual-prompt-examples/form.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/visual-prompt-examples/list.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/visual-prompt-examples/detail.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/empty-state-assets.md"
+  "$REPO_ROOT/packages/mobile-ui-generator/core/project-setup.md"
   "$REPO_ROOT/packages/mobile-ui-generator/core/tokens/base-tokens.scss"
   "$REPO_ROOT/packages/mobile-ui-generator/core/tokens/semantic-tokens.scss"
   "$REPO_ROOT/packages/mobile-ui-generator/core/tokens/theme-contract.ts"
@@ -47,6 +54,7 @@ required_files=(
   "$REPO_ROOT/scripts/command-contract-lib.cjs"
   "$REPO_ROOT/scripts/render-command-docs.cjs"
   "$REPO_ROOT/scripts/validate-command-contract.cjs"
+  "$REPO_ROOT/scripts/sync-core-references.cjs"
 )
 
 
@@ -61,11 +69,13 @@ node --check "$REPO_ROOT/bin/mobile-ui-generator.cjs"
 node --check "$REPO_ROOT/scripts/command-contract-lib.cjs"
 node --check "$REPO_ROOT/scripts/render-command-docs.cjs"
 node --check "$REPO_ROOT/scripts/validate-command-contract.cjs"
+node --check "$REPO_ROOT/scripts/sync-core-references.cjs"
 bash -n "$REPO_ROOT/scripts/install-codex.sh"
 bash -n "$REPO_ROOT/scripts/install-claude.sh"
 bash -n "$REPO_ROOT/scripts/install-cursor.sh"
 bash -n "$REPO_ROOT/scripts/install-pencil-mcp.sh"
 bash -n "$REPO_ROOT/scripts/check-suite.sh"
 node "$REPO_ROOT/scripts/validate-command-contract.cjs"
+node "$REPO_ROOT/scripts/sync-core-references.cjs" --check
 
 echo "Suite validation passed."

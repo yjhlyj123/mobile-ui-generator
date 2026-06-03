@@ -1,0 +1,90 @@
+// ============================================
+// mobile-ui-generator — 语义化 Design Tokens
+// ============================================
+// 通过 CSS Custom Properties 实现主题切换。
+// 业务代码应引用本文件中的语义变量。
+// 主题预设通过覆盖 :root 下的 CSS 变量切换。
+
+@use './base-tokens' as base;
+
+// ── 主题变量注入（CSS Custom Properties）────
+:root {
+  // 品牌
+  --mug-color-primary: #{base.$color-primary};
+  --mug-color-primary-light: #{base.$color-primary-light};
+  --mug-color-primary-dark: #{base.$color-primary-dark};
+  --mug-color-primary-disabled: #{base.$color-primary-disabled};
+
+  // 功能
+  --mug-color-success: #{base.$color-success};
+  --mug-color-warning: #{base.$color-warning};
+  --mug-color-danger: #{base.$color-danger};
+  --mug-color-info: #{base.$color-info};
+
+  // 中性
+  --mug-color-text-primary: #{base.$color-text-primary};
+  --mug-color-text-regular: #{base.$color-text-regular};
+  --mug-color-text-secondary: #{base.$color-text-secondary};
+  --mug-color-text-placeholder: #{base.$color-text-placeholder};
+  --mug-color-text-disabled: #{base.$color-text-disabled};
+
+  --mug-color-bg-page: #{base.$color-bg-page};
+  --mug-color-bg-card: #{base.$color-bg-card};
+  --mug-color-bg-hover: #{base.$color-bg-hover};
+  --mug-color-bg-mask: #{base.$color-bg-mask};
+
+  --mug-color-border: #{base.$color-border};
+  --mug-color-border-light: #{base.$color-border-light};
+
+  // 阴影
+  --mug-shadow-sm: #{base.$shadow-sm};
+  --mug-shadow-base: #{base.$shadow-base};
+  --mug-shadow-md: #{base.$shadow-md};
+  --mug-shadow-lg: #{base.$shadow-lg};
+  --mug-shadow-xl: #{base.$shadow-xl};
+
+  // 圆角
+  --mug-radius-sm: #{base.$radius-sm};
+  --mug-radius-md: #{base.$radius-md};
+  --mug-radius-lg: #{base.$radius-lg};
+  --mug-radius-xl: #{base.$radius-xl};
+  --mug-radius-xxl: #{base.$radius-xxl};
+  --mug-radius-full: #{base.$radius-full};
+
+  // 动效
+  --mug-duration-fast: #{base.$duration-fast};
+  --mug-duration-normal: #{base.$duration-normal};
+  --mug-duration-slow: #{base.$duration-slow};
+
+  --mug-easing-standard: #{base.$easing-standard};
+  --mug-easing-decelerate: #{base.$easing-decelerate};
+  --mug-easing-spring: #{base.$easing-spring};
+}
+
+// ── 语义 SCSS 变量（引用 CSS 变量，可被主题切换）─
+$semantic-color-primary: var(--mug-color-primary);
+$semantic-color-primary-light: var(--mug-color-primary-light);
+$semantic-color-primary-dark: var(--mug-color-primary-dark);
+
+$semantic-color-success: var(--mug-color-success);
+$semantic-color-warning: var(--mug-color-warning);
+$semantic-color-danger: var(--mug-color-danger);
+$semantic-color-info: var(--mug-color-info);
+
+$semantic-text-primary: var(--mug-color-text-primary);
+$semantic-text-regular: var(--mug-color-text-regular);
+$semantic-text-secondary: var(--mug-color-text-secondary);
+$semantic-text-placeholder: var(--mug-color-text-placeholder);
+
+$semantic-bg-page: var(--mug-color-bg-page);
+$semantic-bg-card: var(--mug-color-bg-card);
+
+$semantic-shadow-base: var(--mug-shadow-base);
+$semantic-shadow-md: var(--mug-shadow-md);
+
+$semantic-radius-md: var(--mug-radius-md);
+$semantic-radius-xxl: var(--mug-radius-xxl);
+
+$semantic-transition-fast: var(--mug-duration-fast) var(--mug-easing-standard);
+$semantic-transition-normal: var(--mug-duration-normal) var(--mug-easing-standard);
+$semantic-transition-spring: var(--mug-duration-normal) var(--mug-easing-spring);

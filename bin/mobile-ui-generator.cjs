@@ -141,6 +141,12 @@ function installClaude(options) {
     copyDir(agentsSource, path.join(destRoot, ".claude", "agents"));
   }
 
+  const referencesSource = path.join(sourcePath, "references");
+  if (fs.existsSync(referencesSource)) {
+    ensureDir(path.join(destRoot, ".claude", "references"));
+    copyDir(referencesSource, path.join(destRoot, ".claude", "references"));
+  }
+
   console.log(`Installed Claude adapter to ${destRoot}`);
 }
 
@@ -176,6 +182,12 @@ function installCursor(options) {
     if (!fs.existsSync(agentsDest) || options.force) {
       fs.copyFileSync(agentsSource, agentsDest);
     }
+  }
+
+  const referencesSource = path.join(sourcePath, "references");
+  if (fs.existsSync(referencesSource)) {
+    ensureDir(path.join(destCursorRoot, "references"));
+    copyDir(referencesSource, path.join(destCursorRoot, "references"));
   }
 
   console.log(`Installed Cursor adapter to ${destCursorRoot}`);

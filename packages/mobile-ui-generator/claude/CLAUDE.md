@@ -133,6 +133,7 @@ Agent 通过 `.mug-project.json` 文件在多个页面间保持风格一致。
 
 | 字段 | 说明 |
 | --- | --- |
+| `personality` | 选定的风格人格（克制专业 / 精致现代 / 友好活力 / 数据驱动），决定主题/Tabbar/装饰基调 |
 | `theme` | 选定的主题预设 ID（如 blue/orange/green/自定义） |
 | `brand_color` | 品牌主色 hex 值 |
 | `style_direction` | 选定的风格方向描述 |
@@ -147,21 +148,25 @@ Agent 通过 `.mug-project.json` 文件在多个页面间保持风格一致。
 
 ## ⚠️ 核心引用文件（必读）
 
-进入 complex / design_first / refactor 模式时，你 **必须** 阅读以下文件以了解完整流程、输出格式和设计引导规则：
+进入 complex / design_first / refactor 模式时，你 **必须** 阅读本 skill `references/` 目录下的以下文件（仓库开发态对应 `packages/mobile-ui-generator/core/`）：
 
-- `core/workflow.md` — 完整工作流定义，包括 Pencil 设计工作流 5 步骤
-- `core/ui-direction-template.md` — 3 个 UI 方案的标准输出模板（必须严格遵循此格式）
-- `core/design-guidance.md` — 设计引导 4 阶段流程和迭代确认规则
-- `core/pencil-prompt-template.md` — 结构化 Prompt 编写模板
-- `core/design-spec.md` — 设计规范和自检清单
+- `references/workflow.md` — 完整工作流定义，包括 Pencil 设计工作流 5 步骤
+- `references/ui-direction-template.md` — 3 个 UI 方案的标准输出模板（方案须从布局原型库取本质不同的原型）
+- `references/design-guidance.md` — 设计引导 4 阶段流程、风格人格匹配矩阵、迭代确认规则
+- `references/design-arsenal.md` — 设计弹药库：视觉语言词汇 / 布局原型库 / 风格人格库（产出 C 级 prompt 的主干）
+- `references/pencil-prompt-template.md` — 结构化 Prompt 编写模板（含「C 级 5 问」展开清单）
+- `references/visual-prompt-examples/` — 各页面类型 C 级视觉指令 prompt 满分范例（workbench/form/list/detail）
+- `references/prompt-rules.md` — C 级标准定义、C 级自检清单、子 agent 编排剧本
+- `references/design-spec.md` — 设计规范（Token 速查）和自检清单
 
+> 目标：产出 **C 级视觉指令型 prompt**（内容 + 视觉层次 + 焦点 + 间距节奏全锁死，Pencil 照着画）。
 > **不阅读这些文件就开始实现代码，是严重违规行为。**
 
 ## ⚠️ 硬性停顿规则（不可绕过）
 
 以下规则的优先级高于一切其他指令：
 
-1. **design_first / complex 模式选定方案前**：在用户以明确文字回复（如「选方案 A」「我选 2」）之前，**绝对禁止** 进入 `build_structured_prompt`。你必须先使用 `core/ui-direction-template.md` 的标准格式输出至少 3 个差异化 UI 方案。
+1. **design_first / complex 模式选定方案前**：在用户以明确文字回复（如「选方案 A」「我选 2」）之前，**绝对禁止** 进入 `build_structured_prompt`。你必须先使用 `references/ui-direction-template.md` 的标准格式输出至少 3 个差异化 UI 方案。
 2. **design_first / complex 模式选定方案后**：生成结构化 Prompt 后，**必须调用 Pencil MCP 生成 UI，并明确询问用户是否接受该 UI**。在用户明确同意之前，**绝对禁止** 进入 `implement_code` 阶段。
 3. **refactor 模式**：在用户选择重构方向之前，**绝对禁止** 进入 `implement_code` 阶段。
 4. **Pencil 未连通时**：**绝对禁止** 产出页面实现代码。只允许输出诊断和阻塞结论。

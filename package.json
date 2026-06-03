@@ -27,7 +27,9 @@
     "check": "bash scripts/check-suite.sh",
     "install:pencil-mcp": "bash scripts/install-pencil-mcp.sh",
     "render:docs": "node scripts/render-command-docs.cjs",
-    "validate:contract": "node scripts/validate-command-contract.cjs"
+    "validate:contract": "node scripts/validate-command-contract.cjs",
+    "sync:references": "node scripts/sync-core-references.cjs",
+    "build": "node scripts/sync-core-references.cjs && node scripts/render-command-docs.cjs"
   },
   "keywords": [
     "codex",

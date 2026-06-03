@@ -1,0 +1,64 @@
+{
+  "id": "orange",
+  "name": "活力橙",
+  "description": "温暖、活力、亲和的橙色系，适用于 C 端消费类应用、电商和生活服务。",
+  "brand": {
+    "primary": "#F97316",
+    "primaryLight": "#FFF7ED",
+    "primaryDark": "#EA580C",
+    "primaryDisabled": "rgba(249, 115, 22, 0.4)"
+  },
+  "functional": {
+    "success": "#22C55E",
+    "warning": "#EAB308",
+    "danger": "#EF4444",
+    "info": "#94A3B8"
+  },
+  "status": {
+    "brand":   { "main": "#F97316", "bg": "#FFF7ED", "border": "#FDBA74", "text": "#7C2D12" },
+    "success": { "main": "#22C55E", "bg": "#ECFDF3", "border": "#BBF7D0", "text": "#14532D" },
+    "warning": { "main": "#EAB308", "bg": "#FEFCE8", "border": "#FDE68A", "text": "#713F12" },
+    "error":   { "main": "#EF4444", "bg": "#FEF2F2", "border": "#FECACA", "text": "#7F1D1D" },
+    "info":    { "main": "#64748B", "bg": "#F8FAFC", "border": "#CBD5E1", "text": "#1E293B" }
+  },
+  "neutral": {
+    "textPrimary": "#1C1917",
+    "textRegular": "#292524",
+    "textSecondary": "#78716C",
+    "textPlaceholder": "#A8A29E",
+    "textDisabled": "#D6D3D1",
+    "bgPage": "#FAFAF9",
+    "bgCard": "#FFFFFF",
+    "bgHover": "#F5F5F4",
+    "border": "#E7E5E4",
+    "borderLight": "#F5F5F4"
+  },
+  "shadows": {
+    "sm": "0 1px 4px rgba(0, 0, 0, 0.04)",
+    "base": "0 2px 8px rgba(0, 0, 0, 0.06)",
+    "md": "0 4px 12px rgba(249, 115, 22, 0.08)",
+    "lg": "0 8px 24px rgba(249, 115, 22, 0.10)",
+    "xl": "0 12px 36px rgba(0, 0, 0, 0.12)"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "10px",
+    "lg": "14px",
+    "xl": "18px",
+    "xxl": "22px",
+    "full": "9999px"
+  },
+  "motion": {
+    "durationFast": "150ms",
+    "durationNormal": "250ms",
+    "durationSlow": "400ms",
+    "easingStandard": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "easingDecelerate": "cubic-bezier(0, 0, 0.2, 1)",
+    "easingSpring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+  },
+  "gradients": {
+    "headerBg": "linear-gradient(135deg, #F97316 0%, #FB923C 50%, #FDBA74 100%)",
+    "cardAccent": "linear-gradient(135deg, #F97316 0%, #F59E0B 100%)",
+    "tabbarActive": "linear-gradient(135deg, #F97316 0%, #FB923C 100%)"
+  }
+}

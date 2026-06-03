@@ -580,6 +580,7 @@
   "project_context": {
     "file": ".mug-project.json",
     "fields": {
+      "personality": "选定的风格人格（克制专业 / 精致现代 / 友好活力 / 数据驱动），决定主题/Tabbar/装饰基调",
       "theme": "选定的主题预设 ID（如 blue/orange/green/自定义）",
       "brand_color": "品牌主色 hex 值",
       "style_direction": "选定的风格方向描述",
